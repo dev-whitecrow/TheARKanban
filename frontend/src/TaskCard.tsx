@@ -39,8 +39,10 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
       {...attributes}
       {...listeners}
     >
-      <div className={`task-card-priority-bar ${task.priority}`} />
-      <div className="task-card-id">{task.id}</div>
+      <div className="task-card-id">
+        <span className={`priority-dot ${task.priority}`} />
+        {task.id}
+      </div>
       <div className="task-card-title">{task.title}</div>
       <div className="task-card-meta">
         {task.assignee ? (
@@ -70,8 +72,10 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
 export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
   return (
     <div className="task-card drag-overlay">
-      <div className={`task-card-priority-bar ${task.priority}`} />
-      <div className="task-card-id">{task.id}</div>
+      <div className="task-card-id">
+        <span className={`priority-dot ${task.priority}`} />
+        {task.id}
+      </div>
       <div className="task-card-title">{task.title}</div>
       <div className="task-card-meta">
         {task.assignee ? (

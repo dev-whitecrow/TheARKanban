@@ -33,3 +33,9 @@ data/tasks/*.md
 skills-lock.json
 test.html
 AI-Context-and-Architecture-Blueprint.md
+
+# Design Scratchpads & Specs
+DESIGN.md
+PRODUCT.md
+design-showcase.html
+.agent/
