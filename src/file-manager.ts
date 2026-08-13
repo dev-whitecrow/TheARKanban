@@ -52,7 +52,7 @@ export async function getNextId(): Promise<string> {
   meta.lastId += 1;
   await writeMeta(meta);
   const padded = String(meta.lastId).padStart(3, '0');
-  return `TASK-${padded}`;
+  return `STORY-${padded}`;
 }
 
 // ─── Task File I/O ─────────────────────────────────────────────

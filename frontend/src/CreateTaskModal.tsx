@@ -16,6 +16,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
   const [priority, setPriority] = useState<TaskPriority>('medium');
   const [dueDate, setDueDate] = useState('');
   const [tagsStr, setTagsStr] = useState('');
+  const [body, setBody] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +42,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
         priority,
         dueDate: dueDate || undefined,
         tags: tagsStr ? tagsStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
+        body: body || undefined,
       });
       onCreated();
       onClose();
@@ -56,15 +58,15 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <div className="modal-id">New Task</div>
-            <h2 className="modal-title">Create Task</h2>
+            <div className="modal-id">New Story</div>
+            <h2 className="modal-title">Create Story</h2>
           </div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className="create-form">
           <div className="form-field">
-            <label className="form-label">Title *</label>
+            <label className="form-label">Story Title *</label>
             <input
               className="form-input"
               type="text"
@@ -110,7 +112,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
               />
             </div>
             <div className="form-field">
-              <label className="form-label">Tags</label>
+              <label className="form-label">Epic</label>
               <input
                 className="form-input"
                 type="text"
@@ -121,6 +123,17 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
             </div>
           </div>
 
+          <div className="form-field">
+            <label className="form-label">Tasks</label>
+            <textarea
+              className="form-input"
+              style={{ minHeight: 120, fontFamily: 'var(--font-mono)' }}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Add checklists (- [ ]), notes, etc."
+            />
+          </div>
+
           {error && <div className="form-error">{error}</div>}
 
           <div className="form-actions">
@@ -128,7 +141,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
               Cancel
             </button>
             <button type="submit" className="btn btn-primary" disabled={!title.trim() || saving}>
-              {saving ? 'Creating…' : 'Create Task'}
+              {saving ? 'Creating…' : 'Create Story'}
             </button>
           </div>
         </form>

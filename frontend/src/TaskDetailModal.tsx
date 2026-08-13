@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import type { TaskDetail, TaskPriority, TaskStatus } from './types';
 import { fetchTaskDetail, updateTask, deleteTask } from './api';
+import { useSSE } from './useSSE';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface TaskDetailModalProps {
   taskId: string;
@@ -40,8 +43,9 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
   const [editStatus, setEditStatus] = useState<TaskStatus>('todo');
   const [editDueDate, setEditDueDate] = useState('');
   const [editTags, setEditTags] = useState('');
+  const [editBody, setEditBody] = useState('');
 
-  useEffect(() => {
+  const loadTask = () => {
     fetchTaskDetail(taskId)
       .then((t) => {
         setTask(t);
@@ -51,9 +55,20 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         setEditStatus(t.status);
         setEditDueDate(t.dueDate ?? '');
         setEditTags(t.tags.join(', '));
+        setEditBody(t.body);
       })
       .catch((err) => setError(err.message));
+  };
+
+  useEffect(() => {
+    loadTask();
   }, [taskId]);
+
+  useSSE(() => {
+    if (!editing) {
+      loadTask();
+    }
+  });
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -81,6 +96,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         status: editStatus,
         dueDate: editDueDate || null,
         tags: editTags ? editTags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+        body: editBody,
       });
       setEditing(false);
       onUpdated();
@@ -107,6 +123,37 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
     }
   };
 
+  const handleMarkdownClick = async (e: React.MouseEvent) => {
+    if (!task) return;
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'INPUT' && (target as HTMLInputElement).type === 'checkbox') {
+      e.preventDefault();
+      
+      const allCheckboxes = Array.from(document.querySelectorAll('.markdown-body input[type="checkbox"]'));
+      const index = allCheckboxes.indexOf(target as HTMLInputElement);
+      if (index === -1) return;
+
+      let count = -1;
+      const newBody = task.body.replace(/- \[[ xX]\]/g, (match) => {
+        count++;
+        if (count === index) {
+          return match === '- [ ]' ? '- [x]' : '- [ ]';
+        }
+        return match;
+      });
+
+      // Optimistic UI update
+      setTask({ ...task, body: newBody });
+      try {
+        await updateTask(task.id, { body: newBody });
+        onUpdated();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to toggle checkbox');
+        setTask(task); // Revert
+      }
+    }
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -125,7 +172,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
             <div className="modal-header">
               <div>
                 <div className="modal-id">{task.id}</div>
-                <h2 className="modal-title">Edit Task</h2>
+                <h2 className="modal-title">Edit Story</h2>
               </div>
               <button className="modal-close" onClick={() => setEditing(false)}>✕</button>
             </div>
@@ -193,13 +240,24 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
               </div>
 
               <div className="form-field">
-                <label className="form-label">Tags</label>
+                <label className="form-label">Epic</label>
                 <input
                   className="form-input"
                   type="text"
                   value={editTags}
                   onChange={(e) => setEditTags(e.target.value)}
                   placeholder="comma, separated"
+                />
+              </div>
+
+              <div className="form-field">
+                <label className="form-label">Tasks</label>
+                <textarea
+                  className="form-input"
+                  style={{ minHeight: 120, fontFamily: 'var(--font-mono)' }}
+                  value={editBody || ''}
+                  onChange={(e) => setEditBody(e.target.value)}
+                  placeholder="Add notes, checklists, etc."
                 />
               </div>
 
@@ -298,8 +356,20 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
               </div>
             )}
 
-            <div className="modal-body">
-              <pre>{task.body || 'No notes yet.'}</pre>
+            <div className="modal-body markdown-body" onClick={handleMarkdownClick}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  input: ({node, disabled, ...props}) => {
+                    if (props.type === 'checkbox') {
+                      return <input {...props} disabled={false} style={{ cursor: 'pointer' }} />;
+                    }
+                    return <input {...props} disabled={disabled} />;
+                  }
+                }}
+              >
+                {task.body || 'No notes yet.'}
+              </ReactMarkdown>
             </div>
           </>
         )}

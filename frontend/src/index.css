@@ -417,18 +417,60 @@ h1, h2, h3, .header-title, .modal-title {
 }
 
 .modal-body {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: pre-wrap;
 }
 
-.modal-body pre {
-  font-family: var(--font-sans);
+/* Markdown Rendering Styles */
+.markdown-body {
+  font-family: var(--font-primary);
   font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  white-space: pre-wrap;
-  word-break: break-word;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 24px;
+  margin-bottom: 12px;
+}
+
+.markdown-body ul.contains-task-list {
+  padding-left: 0;
+}
+
+.markdown-body li {
+  margin-bottom: 4px;
+}
+
+.markdown-body li.task-list-item {
+  list-style-type: none;
+  display: flex;
+  align-items: flex-start;
+}
+
+.markdown-body input[type="checkbox"] {
+  margin-top: 4px;
+  margin-right: 8px;
+  accent-color: var(--accent-lime);
+}
+
+.markdown-body pre {
+  font-family: var(--font-mono);
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
 }
 
 /* ─── Status Badge ──────────────────────────────────────────── */

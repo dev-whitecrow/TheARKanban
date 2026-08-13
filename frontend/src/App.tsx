@@ -224,7 +224,7 @@ export default function App() {
         <div className="header-stats">
           <div className="stat-badge">
             <span className="count">{board?.totalTasks ?? 0}</span>
-            <span>tasks</span>
+            <span>stories</span>
           </div>
           <div className="stat-badge">
             <div className={`connection-dot ${connected ? '' : 'disconnected'}`} />

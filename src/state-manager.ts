@@ -163,7 +163,9 @@ function handleFileChange(relativePath: string, eventType: 'add' | 'change'): vo
       const existingTask = taskMap.get(task.frontmatter.id);
       const isExternalChange =
         !existingTask ||
-        existingTask.frontmatter.updatedAt !== task.frontmatter.updatedAt;
+        existingTask.frontmatter.updatedAt !== task.frontmatter.updatedAt ||
+        existingTask.body !== task.body ||
+        JSON.stringify(existingTask.frontmatter) !== JSON.stringify(task.frontmatter);
 
       upsertTask(task);
 
