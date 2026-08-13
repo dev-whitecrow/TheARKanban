@@ -45,6 +45,7 @@ export async function createTaskApi(input: {
   priority?: string;
   dueDate?: string;
   tags?: string[];
+  body?: string;
 }): Promise<void> {
   const res = await fetch(`${BASE}/api/tasks`, {
     method: 'POST',

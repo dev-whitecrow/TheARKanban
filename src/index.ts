@@ -2,11 +2,15 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { consola } from 'consola';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initStateManager } from './state-manager.js';
 import { createApiRouter } from './api/routes.js';
 import { registerSSE } from './api/sse.js';
 
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function main() {
   consola.box('🌌 MNDK — Markdown-Native Discord Kanban');
@@ -21,6 +25,18 @@ async function main() {
 
   // 3. Register REST API routes
   app.use(createApiRouter());
+
+  // Serve Frontend Static Files
+  const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendDistPath));
+
+  // Handle React Router fallback (if not an API route, send index.html)
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
 
   // 4. Register SSE endpoint
   registerSSE(app);
