@@ -2,7 +2,7 @@
   <!-- 위에서 생성된 GIF의 경로를 저장소 환경에 맞게 수정해주세요 -->
   <img src="./ThearKANBAN_banner.gif" alt="ThearKANBAN Workflow Animation" width="850"/>
 
-  # ThearKANBAN (MNDK)
+  # TheARKanban (MNDK)
   **Markdown-Native Discord Kanban**
 
   <p align="center">
