@@ -31,7 +31,7 @@ async function main() {
   app.use(express.static(frontendDistPath));
 
   // Handle React Router fallback (if not an API route, send index.html)
-  app.get('*', (req, res, next) => {
+  app.use((req, res, next) => {
     if (req.path.startsWith('/api/') || req.path === '/health') {
       return next();
     }
