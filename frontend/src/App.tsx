@@ -45,7 +45,7 @@ function DroppableColumn({
           <span className="column-count">{tasks.length}</span>
           <button
             className="btn-add"
-            title={`Add task to ${label}`}
+            title={`Add story to ${label}`}
             onClick={() => onAddClick(id as TaskStatus)}
           >
             +
@@ -60,7 +60,7 @@ function DroppableColumn({
           {tasks.length === 0 ? (
             <div className="empty-state">
               <div className="icon">📭</div>
-              <div>No tasks</div>
+              <div>No stories</div>
             </div>
           ) : (
             tasks.map((task) => (

@@ -47,7 +47,7 @@ export function buildTaskEmbed(task: TaskFrontmatter): EmbedBuilder {
   }
 
   if (task.tags.length > 0) {
-    embed.addFields({ name: 'Tags', value: task.tags.map((t) => `\`${t}\``).join(' '), inline: false });
+    embed.addFields({ name: 'Epic', value: task.tags.map((t) => `\`${t}\``).join(' '), inline: false });
   }
 
   return embed;
@@ -58,11 +58,11 @@ export function buildTaskEmbed(task: TaskFrontmatter): EmbedBuilder {
 export function buildTaskListEmbed(tasks: TaskFrontmatter[], filterLabel: string): EmbedBuilder {
   const embed = new EmbedBuilder()
     .setColor(0x5865F2) // Discord blurple
-    .setTitle(`📊 Tasks — ${filterLabel}`)
+    .setTitle(`📊 Stories — ${filterLabel}`)
     .setTimestamp();
 
   if (tasks.length === 0) {
-    embed.setDescription('_No tasks found._');
+    embed.setDescription('_No stories found._');
     return embed;
   }
 
@@ -75,9 +75,9 @@ export function buildTaskListEmbed(tasks: TaskFrontmatter[], filterLabel: string
   embed.setDescription(lines.join('\n'));
 
   if (tasks.length > 20) {
-    embed.setFooter({ text: `Showing 20 of ${tasks.length} tasks` });
+    embed.setFooter({ text: `Showing 20 of ${tasks.length} stories` });
   } else {
-    embed.setFooter({ text: `${tasks.length} task(s)` });
+    embed.setFooter({ text: `${tasks.length} story(s)` });
   }
 
   return embed;
@@ -102,7 +102,7 @@ export function buildBoardEmbed(board: BoardState): EmbedBuilder {
   embed.setDescription(lines.join('\n\n'));
   embed.addFields({
     name: 'Total',
-    value: `${board.totalTasks} task(s)`,
+    value: `${board.totalTasks} story(s)`,
     inline: true,
   });
 
@@ -130,6 +130,7 @@ export function buildChangeNotificationEmbed(
       `${action.emoji} **${task.id}** ${action.label.toLowerCase()}: "${task.title}"` +
       `\nStatus: \`${task.status}\` | Priority: ${PRIORITY_EMOJI[task.priority] ?? '⚪'} ${task.priority}` +
       (task.assignee ? `\nAssignee: ${task.assignee}` : '') +
+      (task.tags.length > 0 ? `\nEpic: ${task.tags.map(t => `\`${t}\``).join(' ')}` : '') +
       `\n_via ${source}_`,
     )
     .setTimestamp();

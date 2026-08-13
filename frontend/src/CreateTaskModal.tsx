@@ -47,7 +47,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
       onCreated();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create task');
+      setError(err instanceof Error ? err.message : 'Failed to create story');
     } finally {
       setSaving(false);
     }
@@ -118,7 +118,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
                 type="text"
                 value={tagsStr}
                 onChange={(e) => setTagsStr(e.target.value)}
-                placeholder="comma, separated"
+                placeholder="comma, separated epics"
               />
             </div>
           </div>

@@ -246,7 +246,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
                   type="text"
                   value={editTags}
                   onChange={(e) => setEditTags(e.target.value)}
-                  placeholder="comma, separated"
+                  placeholder="comma, separated epics"
                 />
               </div>
 

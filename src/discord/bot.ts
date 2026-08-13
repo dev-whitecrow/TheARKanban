@@ -20,13 +20,13 @@ import { startNotifications } from './notifications.js';
 // ─── Slash Command Definitions ─────────────────────────────────
 
 const taskCommand = new SlashCommandBuilder()
-  .setName('task')
-  .setDescription('Manage Kanban tasks')
+  .setName('story')
+  .setDescription('Manage Kanban stories')
   .addSubcommand((sub) =>
     sub
       .setName('create')
-      .setDescription('Create a new task')
-      .addStringOption((opt) => opt.setName('title').setDescription('Task title').setRequired(true))
+      .setDescription('Create a new story')
+      .addStringOption((opt) => opt.setName('title').setDescription('Story title').setRequired(true))
       .addStringOption((opt) =>
         opt.setName('assignee').setDescription('Assignee name').setRequired(false),
       )
@@ -43,13 +43,13 @@ const taskCommand = new SlashCommandBuilder()
           ),
       )
       .addStringOption((opt) =>
-        opt.setName('tags').setDescription('Comma-separated tags').setRequired(false),
+        opt.setName('epic').setDescription('Comma-separated epics').setRequired(false),
       ),
   )
   .addSubcommand((sub) =>
     sub
       .setName('list')
-      .setDescription('List tasks')
+      .setDescription('List stories')
       .addStringOption((opt) =>
         opt
           .setName('status')
@@ -70,7 +70,7 @@ const taskCommand = new SlashCommandBuilder()
   .addSubcommand((sub) =>
     sub
       .setName('show')
-      .setDescription('Show task details')
+      .setDescription('Show story details')
       .addStringOption((opt) =>
         opt.setName('id').setDescription('Story ID (e.g., STORY-001)').setRequired(true),
       ),
@@ -78,9 +78,9 @@ const taskCommand = new SlashCommandBuilder()
   .addSubcommand((sub) =>
     sub
       .setName('move')
-      .setDescription('Move task to a new status')
+      .setDescription('Move story to a new status')
       .addStringOption((opt) =>
-        opt.setName('id').setDescription('Task ID').setRequired(true),
+        opt.setName('id').setDescription('Story ID').setRequired(true),
       )
       .addStringOption((opt) =>
         opt
@@ -99,9 +99,9 @@ const taskCommand = new SlashCommandBuilder()
   .addSubcommand((sub) =>
     sub
       .setName('assign')
-      .setDescription('Assign a task to someone')
+      .setDescription('Assign a story to someone')
       .addStringOption((opt) =>
-        opt.setName('id').setDescription('Task ID').setRequired(true),
+        opt.setName('id').setDescription('Story ID').setRequired(true),
       )
       .addStringOption((opt) =>
         opt.setName('assignee').setDescription('New assignee (leave empty to unassign)').setRequired(false),
@@ -124,8 +124,8 @@ async function handleTaskCommand(interaction: ChatInputCommandInteraction): Prom
       const title = interaction.options.getString('title', true);
       const assignee = interaction.options.getString('assignee') ?? undefined;
       const priority = (interaction.options.getString('priority') as any) ?? undefined;
-      const tagsStr = interaction.options.getString('tags');
-      const tags = tagsStr ? tagsStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined;
+      const epicStr = interaction.options.getString('epic');
+      const tags = epicStr ? epicStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined;
 
       const task = await createTask({ title, assignee, priority, tags }, 'discord');
       await interaction.reply({ embeds: [buildTaskEmbed(task.frontmatter)] });
@@ -175,7 +175,7 @@ async function handleTaskCommand(interaction: ChatInputCommandInteraction): Prom
 
       const existing = getTask(id);
       if (!existing) {
-        await interaction.reply({ content: `❌ Task \`${id}\` not found.`, ephemeral: true });
+        await interaction.reply({ content: `❌ Story \`${id}\` not found.`, ephemeral: true });
         return;
       }
 
@@ -184,7 +184,7 @@ async function handleTaskCommand(interaction: ChatInputCommandInteraction): Prom
         await interaction.reply({ embeds: [buildTaskEmbed(updated.frontmatter)] });
       } catch (err) {
         await interaction.reply({
-          content: `❌ ${err instanceof Error ? err.message : 'Failed to move task'}`,
+          content: `❌ ${err instanceof Error ? err.message : 'Failed to move story'}`,
           ephemeral: true,
         });
       }
@@ -197,7 +197,7 @@ async function handleTaskCommand(interaction: ChatInputCommandInteraction): Prom
 
       const existing = getTask(id);
       if (!existing) {
-        await interaction.reply({ content: `❌ Task \`${id}\` not found.`, ephemeral: true });
+        await interaction.reply({ content: `❌ Story \`${id}\` not found.`, ephemeral: true });
         return;
       }
 
@@ -270,7 +270,7 @@ export async function startDiscordBot(): Promise<Client> {
 
     try {
       switch (interaction.commandName) {
-        case 'task':
+        case 'story':
           await handleTaskCommand(interaction);
           break;
         case 'board':

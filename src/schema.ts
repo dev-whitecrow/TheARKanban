@@ -45,6 +45,11 @@ export const TaskFrontmatterSchema = z.object({
 export type TaskFrontmatter = z.infer<typeof TaskFrontmatterSchema>;
 
 // ─── Full Task (frontmatter + body) ────────────────────────────
+/**
+ * NOTE: Internally this is called "Task", but in the UI and Domain Language,
+ * this represents a "Story" (the main card on the Kanban board).
+ * The sub-checklists inside the body are the actual "Tasks".
+ */
 export interface Task {
   frontmatter: TaskFrontmatter;
   body: string;           // markdown body (notes, activity log)

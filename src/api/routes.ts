@@ -22,6 +22,14 @@ import {
 export function createApiRouter(): Router {
   const router = Router();
 
+  /**
+   * NOTE ON DOMAIN LANGUAGE:
+   * The API endpoints and internal variable names use "task" (e.g., /api/tasks, getTask).
+   * However, in the User Interface and Domain Language, these represent a "Story"
+   * (the main cards on the Kanban board).
+   * The internal checklist items within a Story are referred to as "Tasks".
+   */
+
   // ─── GET /api/tasks ────────────────────────────────────────
   // List all tasks, optionally filtered by status or assignee
   router.get('/api/tasks', async (req: Request, res: Response) => {
