@@ -83,3 +83,29 @@ npm run build
 2. **Discord Bot:** Immediate task creation/updates via slash commands (`/story`, `/board`).
 3. **Local IDE (VS Code / Obsidian):** Direct Markdown editing for developers. 
 4. **AI Agents:** Real-time context parsing via REST API and Model Context Protocol (MCP) for native AI agent integration (e.g., Claude, Cursor).
+---
+
+## 🏗️ Technical Details & Architecture
+
+### Tech Stack
+- **Backend:** Node.js (TypeScript), Express, `@modelcontextprotocol/sdk` (for MCP).
+- **Storage / File System:** `gray-matter` (YAML parsing), `chokidar` (File watcher).
+- **Frontend:** React (Vite), TailwindCSS, `dnd-kit` (for Kanban drag & drop).
+- **Discord Integration:** `discord.js`.
+- **Concurrency Handling:** Built-in Write Queue for robust local file locking.
+
+### System Architecture & Data Flow
+
+**Directory Structure:** All tasks reside in a specific folder (e.g., `./data/tasks/`).
+
+**Task Format (`.md`):** Must be fully compatible with standard Obsidian/VS Code Kanban frontmatter.
+```yaml
+---
+id: "STORY-123"
+title: "Community Member A Follow-up"
+status: "in-progress"
+assignee: "Morpheus"
+epic: "Onboarding"
+---
+Consulting history and notes go here...
+```
