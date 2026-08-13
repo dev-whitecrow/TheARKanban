@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Frontend build
+frontend/dist/
+frontend/node_modules/
+
+# Kanban Data & Local State
+data/tasks/*.md
+!data/tasks/.gitkeep
+.kanban-meta.json
+
+# AI Assistants & Temp Files
+.claude/
+skills-lock.json
+test.html
+AI-Context-and-Architecture-Blueprint.md

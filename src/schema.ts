@@ -1,0 +1,98 @@
+import { z } from 'zod';
+
+// ─── Status Enum ───────────────────────────────────────────────
+export const TaskStatus = z.enum([
+  'todo',
+  'in-progress',
+  'review',
+  'done',
+  'blocked',
+]);
+export type TaskStatus = z.infer<typeof TaskStatus>;
+
+// ─── Priority Enum ─────────────────────────────────────────────
+export const TaskPriority = z.enum(['low', 'medium', 'high', 'urgent']);
+export type TaskPriority = z.infer<typeof TaskPriority>;
+
+// ─── Status Transition Rules ───────────────────────────────────
+// Defines which status transitions are allowed.
+// "blocked" can be entered from any status and can return to any status.
+export const ALLOWED_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
+  'todo': ['in-progress', 'blocked'],
+  'in-progress': ['review', 'done', 'blocked', 'todo'],
+  'review': ['in-progress', 'done', 'blocked'],
+  'done': ['todo', 'in-progress'],           // reopen allowed
+  'blocked': ['todo', 'in-progress', 'review'], // unblock to any active state
+};
+
+export function isValidTransition(from: TaskStatus, to: TaskStatus): boolean {
+  return ALLOWED_TRANSITIONS[from]?.includes(to) ?? false;
+}
+
+// ─── Task Frontmatter Schema ───────────────────────────────────
+export const TaskFrontmatterSchema = z.object({
+  id: z.string().regex(/^TASK-\d+$/, 'ID must be in TASK-NNN format'),
+  title: z.string().min(1, 'Title is required'),
+  status: TaskStatus.default('todo'),
+  assignee: z.string().optional(),
+  priority: TaskPriority.default('medium'),
+  dueDate: z.string().optional(), // ISO date string
+  tags: z.array(z.string()).default([]),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type TaskFrontmatter = z.infer<typeof TaskFrontmatterSchema>;
+
+// ─── Full Task (frontmatter + body) ────────────────────────────
+export interface Task {
+  frontmatter: TaskFrontmatter;
+  body: string;           // markdown body (notes, activity log)
+  filePath: string;       // absolute path to the .md file
+}
+
+// ─── Create Task Input (for API/CLI/Discord) ───────────────────
+export const CreateTaskInputSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  status: TaskStatus.optional(),
+  assignee: z.string().optional(),
+  priority: TaskPriority.optional(),
+  dueDate: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  body: z.string().optional(),
+});
+
+export type CreateTaskInput = z.infer<typeof CreateTaskInputSchema>;
+
+// ─── Update Task Input ─────────────────────────────────────────
+export const UpdateTaskInputSchema = z.object({
+  title: z.string().min(1).optional(),
+  status: TaskStatus.optional(),
+  assignee: z.string().nullable().optional(), // null to unassign
+  priority: TaskPriority.optional(),
+  dueDate: z.string().nullable().optional(),  // null to clear
+  tags: z.array(z.string()).optional(),
+  body: z.string().optional(),
+});
+
+export type UpdateTaskInput = z.infer<typeof UpdateTaskInputSchema>;
+
+// ─── Kanban Meta Schema ────────────────────────────────────────
+export const KanbanMetaSchema = z.object({
+  lastId: z.number().int().min(0),
+  columns: z.array(TaskStatus),
+  columnLabels: z.record(TaskStatus, z.string()),
+});
+
+export type KanbanMeta = z.infer<typeof KanbanMetaSchema>;
+
+// ─── Board State (grouped by columns) ──────────────────────────
+export interface BoardState {
+  columns: {
+    id: TaskStatus;
+    label: string;
+    tasks: TaskFrontmatter[];
+  }[];
+  totalTasks: number;
+  lastSync: string; // ISO timestamp
+}

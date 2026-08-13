@@ -1,0 +1,58 @@
+import type { Express, Request, Response } from 'express';
+import { consola } from 'consola';
+import { taskEvents, type TaskEvent } from '../write-queue.js';
+
+// Track connected SSE clients
+const clients = new Set<Response>();
+
+export function registerSSE(app: Express): void {
+  app.get('/api/events', (req: Request, res: Response) => {
+    // Set SSE headers
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no', // Disable nginx buffering
+    });
+
+    // Send initial connection event
+    res.write(`event: connected\ndata: ${JSON.stringify({ message: 'SSE connected' })}\n\n`);
+
+    // Add to client set
+    clients.add(res);
+    consola.info(`SSE client connected (total: ${clients.size})`);
+
+    // Heartbeat every 30s to keep connection alive
+    const heartbeat = setInterval(() => {
+      res.write(': heartbeat\n\n');
+    }, 30_000);
+
+    // Cleanup on disconnect
+    req.on('close', () => {
+      clearInterval(heartbeat);
+      clients.delete(res);
+      consola.info(`SSE client disconnected (total: ${clients.size})`);
+    });
+  });
+
+  // Listen to task events and broadcast to all SSE clients
+  taskEvents.on('task:event', (event: TaskEvent) => {
+    const data = JSON.stringify({
+      type: event.type,
+      task: event.task.frontmatter,
+      source: event.source,
+      timestamp: new Date().toISOString(),
+    });
+
+    for (const client of clients) {
+      client.write(`event: ${event.type}\ndata: ${data}\n\n`);
+    }
+  });
+}
+
+/**
+ * Get the number of connected SSE clients.
+ */
+export function getSSEClientCount(): number {
+  return clients.size;
+}
