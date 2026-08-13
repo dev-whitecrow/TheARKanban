@@ -27,7 +27,7 @@ async function main() {
   app.use(createApiRouter());
 
   // Serve Frontend Static Files
-  const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+  const frontendDistPath = path.join(__dirname, '../frontend/dist');
   app.use(express.static(frontendDistPath));
 
   // Handle React Router fallback (if not an API route, send index.html)
