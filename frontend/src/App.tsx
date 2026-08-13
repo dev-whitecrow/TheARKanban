@@ -82,6 +82,17 @@ export default function App() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createForColumn, setCreateForColumn] = useState<TaskStatus | null>(null);
 
+  const uniqueAssignees = React.useMemo(() => {
+    if (!board) return [];
+    const assignees = new Set<string>();
+    board.columns.forEach(col => {
+      col.tasks.forEach(t => {
+        if (t.assignee) assignees.add(t.assignee);
+      });
+    });
+    return Array.from(assignees).sort();
+  }, [board]);
+
   // Load initial board state
   const loadBoard = useCallback(async () => {
     try {
@@ -253,6 +264,7 @@ export default function App() {
           taskId={selectedTaskId}
           onClose={() => setSelectedTaskId(null)}
           onUpdated={loadBoard}
+          uniqueAssignees={uniqueAssignees}
         />
       )}
 
@@ -262,6 +274,7 @@ export default function App() {
           initialStatus={createForColumn}
           onClose={() => setCreateForColumn(null)}
           onCreated={loadBoard}
+          uniqueAssignees={uniqueAssignees}
         />
       )}
     </>

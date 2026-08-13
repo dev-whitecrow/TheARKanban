@@ -596,6 +596,87 @@ h1, h2, h3, .header-title, .modal-title {
   gap: 16px;
 }
 
+.w-full {
+  width: 100%;
+}
+
+.assignee-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.assignee-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.assignee-option {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: background 0.15s ease;
+}
+
+.assignee-option:hover {
+  background: var(--bg-card-hover);
+  color: var(--primary-color);
+}
+
+.assignee-option .avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.assignee-option:hover .avatar {
+  background: var(--primary-color);
+  color: #000;
+}
+
+.assignee-option.empty {
+  color: var(--text-muted);
+  cursor: default;
+  pointer-events: none;
+}
+
+.assignee-option.add-new {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 4px;
+  padding-top: 8px;
+  color: var(--text-secondary);
+}
+
+.assignee-option.add-new .avatar.add {
+  background: transparent;
+  border: 1px dashed var(--text-muted);
+  color: var(--text-muted);
+}
+
 .form-error {
   font-size: 13px;
   color: var(--status-blocked);

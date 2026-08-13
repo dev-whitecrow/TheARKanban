@@ -45,6 +45,14 @@ async function main() {
     consola.info(`Board:  http://localhost:${PORT}/api/board`);
     consola.info(`SSE:    http://localhost:${PORT}/api/events`);
   });
+
+  // 7. Graceful shutdown handler
+  const shutdown = () => {
+    consola.info('Shutting down gracefully...');
+    process.exit(0);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
 main().catch((err) => {

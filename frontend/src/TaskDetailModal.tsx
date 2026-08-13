@@ -6,6 +6,7 @@ interface TaskDetailModalProps {
   taskId: string;
   onClose: () => void;
   onUpdated: () => void;
+  uniqueAssignees: string[];
 }
 
 const STATUS_EMOJI: Record<string, string> = {
@@ -23,7 +24,9 @@ const PRIORITY_EMOJI: Record<string, string> = {
   low: '🟢',
 };
 
-export default function TaskDetailModal({ taskId, onClose, onUpdated }: TaskDetailModalProps) {
+import AssigneeSelect from './AssigneeSelect';
+
+export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssignees }: TaskDetailModalProps) {
   const [task, setTask] = useState<TaskDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
@@ -172,12 +175,10 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: TaskDeta
               <div className="form-row">
                 <div className="form-field">
                   <label className="form-label">Assignee</label>
-                  <input
-                    className="form-input"
-                    type="text"
+                  <AssigneeSelect
                     value={editAssignee}
-                    onChange={(e) => setEditAssignee(e.target.value)}
-                    placeholder="e.g., Morpheus"
+                    onChange={setEditAssignee}
+                    options={uniqueAssignees}
                   />
                 </div>
                 <div className="form-field">

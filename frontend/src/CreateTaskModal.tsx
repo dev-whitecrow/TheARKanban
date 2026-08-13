@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import type { TaskStatus, TaskPriority } from './types';
 import { createTaskApi } from './api';
+import AssigneeSelect from './AssigneeSelect';
 
 interface CreateTaskModalProps {
   initialStatus: TaskStatus;
   onClose: () => void;
   onCreated: () => void;
+  uniqueAssignees: string[];
 }
 
-export default function CreateTaskModal({ initialStatus, onClose, onCreated }: CreateTaskModalProps) {
+export default function CreateTaskModal({ initialStatus, onClose, onCreated, uniqueAssignees }: CreateTaskModalProps) {
   const [title, setTitle] = useState('');
   const [assignee, setAssignee] = useState('');
   const [priority, setPriority] = useState<TaskPriority>('medium');
@@ -76,12 +78,10 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated }: C
           <div className="form-row">
             <div className="form-field">
               <label className="form-label">Assignee</label>
-              <input
-                className="form-input"
-                type="text"
+              <AssigneeSelect
                 value={assignee}
-                onChange={(e) => setAssignee(e.target.value)}
-                placeholder="e.g., Morpheus"
+                onChange={setAssignee}
+                options={uniqueAssignees}
               />
             </div>
             <div className="form-field">
