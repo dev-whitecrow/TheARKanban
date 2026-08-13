@@ -60,14 +60,14 @@ export function createApiRouter(): Router {
   // ─── GET /api/tasks/:id ────────────────────────────────────
   router.get('/api/tasks/:id', async (req: Request, res: Response) => {
     try {
-      const task = getTask(req.params.id);
+      const task = getTask(req.params.id as string);
       if (!task) {
-        res.status(404).json({ error: `Task ${req.params.id} not found` });
+        res.status(404).json({ error: `Task ${req.params.id as string} not found` });
         return;
       }
       res.json({ ...task.frontmatter, body: task.body });
     } catch (err) {
-      consola.error(`GET /api/tasks/${req.params.id} failed:`, err);
+      consola.error(`GET /api/tasks/${req.params.id as string} failed:`, err);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -92,9 +92,9 @@ export function createApiRouter(): Router {
   // ─── PUT /api/tasks/:id ────────────────────────────────────
   router.put('/api/tasks/:id', async (req: Request, res: Response) => {
     try {
-      const existing = getTask(req.params.id);
+      const existing = getTask(req.params.id as string);
       if (!existing) {
-        res.status(404).json({ error: `Task ${req.params.id} not found` });
+        res.status(404).json({ error: `Task ${req.params.id as string} not found` });
         return;
       }
 
@@ -109,7 +109,7 @@ export function createApiRouter(): Router {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
       const status = message.includes('Invalid status transition') ? 400 : 500;
-      consola.error(`PUT /api/tasks/${req.params.id} failed:`, err);
+      consola.error(`PUT /api/tasks/${req.params.id as string} failed:`, err);
       res.status(status).json({ error: message });
     }
   });
@@ -117,9 +117,9 @@ export function createApiRouter(): Router {
   // ─── PUT /api/tasks/:id/move ───────────────────────────────
   router.put('/api/tasks/:id/move', async (req: Request, res: Response) => {
     try {
-      const existing = getTask(req.params.id);
+      const existing = getTask(req.params.id as string);
       if (!existing) {
-        res.status(404).json({ error: `Task ${req.params.id} not found` });
+        res.status(404).json({ error: `Task ${req.params.id as string} not found` });
         return;
       }
 
@@ -141,9 +141,9 @@ export function createApiRouter(): Router {
   // ─── POST /api/tasks/:id/note ──────────────────────────────
   router.post('/api/tasks/:id/note', async (req: Request, res: Response) => {
     try {
-      const existing = getTask(req.params.id);
+      const existing = getTask(req.params.id as string);
       if (!existing) {
-        res.status(404).json({ error: `Task ${req.params.id} not found` });
+        res.status(404).json({ error: `Task ${req.params.id as string} not found` });
         return;
       }
 
@@ -156,7 +156,7 @@ export function createApiRouter(): Router {
       const updated = await addNote(existing, note, author, 'api');
       res.json(updated.frontmatter);
     } catch (err) {
-      consola.error(`POST /api/tasks/${req.params.id}/note failed:`, err);
+      consola.error(`POST /api/tasks/${req.params.id as string}/note failed:`, err);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -164,16 +164,16 @@ export function createApiRouter(): Router {
   // ─── DELETE /api/tasks/:id ─────────────────────────────────
   router.delete('/api/tasks/:id', async (req: Request, res: Response) => {
     try {
-      const existing = getTask(req.params.id);
+      const existing = getTask(req.params.id as string);
       if (!existing) {
-        res.status(404).json({ error: `Task ${req.params.id} not found` });
+        res.status(404).json({ error: `Task ${req.params.id as string} not found` });
         return;
       }
 
       await removeTask(existing, 'api');
-      res.json({ deleted: req.params.id });
+      res.json({ deleted: req.params.id as string });
     } catch (err) {
-      consola.error(`DELETE /api/tasks/${req.params.id} failed:`, err);
+      consola.error(`DELETE /api/tasks/${req.params.id as string} failed:`, err);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

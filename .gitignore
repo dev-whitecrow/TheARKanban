@@ -2,7 +2,7 @@
 node_modules/
 
 # Build output
-dist/
+# dist/
 
 # Environment variables
 .env
@@ -20,7 +20,7 @@ Thumbs.db
 *.log
 
 # Frontend build
-frontend/dist/
+# frontend/dist/
 frontend/node_modules/
 
 # Kanban Data & Local State
