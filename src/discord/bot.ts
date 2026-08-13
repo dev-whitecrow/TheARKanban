@@ -279,14 +279,18 @@ export async function startDiscordBot(): Promise<Client> {
       }
     } catch (err) {
       consola.error(`Discord command error (${interaction.commandName}):`, err);
-      const reply = {
-        content: `❌ Something went wrong: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        ephemeral: true,
-      };
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp(reply);
-      } else {
-        await interaction.reply(reply);
+      try {
+        const reply = {
+          content: `❌ Something went wrong: ${err instanceof Error ? err.message : 'Unknown error'}`,
+          ephemeral: true,
+        };
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp(reply);
+        } else {
+          await interaction.reply(reply);
+        }
+      } catch (replyErr) {
+        consola.error('Failed to send error reply to Discord:', replyErr);
       }
     }
   });
