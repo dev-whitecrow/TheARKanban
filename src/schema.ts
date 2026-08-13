@@ -31,7 +31,7 @@ export function isValidTransition(from: TaskStatus, to: TaskStatus): boolean {
 
 // ─── Task Frontmatter Schema ───────────────────────────────────
 export const TaskFrontmatterSchema = z.object({
-  id: z.string().regex(/^TASK-\d+$/, 'ID must be in TASK-NNN format'),
+  id: z.string().regex(/^STORY-\d+$/, 'ID must be in STORY-NNN format'),
   title: z.string().min(1, 'Title is required'),
   status: TaskStatus.default('todo'),
   assignee: z.string().optional(),

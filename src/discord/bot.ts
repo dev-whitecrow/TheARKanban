@@ -72,7 +72,7 @@ const taskCommand = new SlashCommandBuilder()
       .setName('show')
       .setDescription('Show task details')
       .addStringOption((opt) =>
-        opt.setName('id').setDescription('Task ID (e.g., TASK-001)').setRequired(true),
+        opt.setName('id').setDescription('Story ID (e.g., STORY-001)').setRequired(true),
       ),
   )
   .addSubcommand((sub) =>
