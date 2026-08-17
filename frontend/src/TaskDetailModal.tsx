@@ -10,6 +10,7 @@ interface TaskDetailModalProps {
   onClose: () => void;
   onUpdated: () => void;
   uniqueAssignees: string[];
+  uniqueEpics: string[];
 }
 
 const STATUS_EMOJI: Record<string, string> = {
@@ -28,8 +29,9 @@ const PRIORITY_EMOJI: Record<string, string> = {
 };
 
 import AssigneeSelect from './AssigneeSelect';
+import EpicSelect from './EpicSelect';
 
-export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssignees }: TaskDetailModalProps) {
+export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssignees, uniqueEpics }: TaskDetailModalProps) {
   const [task, setTask] = useState<TaskDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
@@ -42,6 +44,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
   const [editPriority, setEditPriority] = useState<TaskPriority>('medium');
   const [editStatus, setEditStatus] = useState<TaskStatus>('todo');
   const [editDueDate, setEditDueDate] = useState('');
+  const [editEpic, setEditEpic] = useState('');
   const [editTags, setEditTags] = useState('');
   const [editBody, setEditBody] = useState('');
 
@@ -54,6 +57,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         setEditPriority(t.priority);
         setEditStatus(t.status);
         setEditDueDate(t.dueDate ?? '');
+        setEditEpic(t.epic ?? '');
         setEditTags(t.tags.join(', '));
         setEditBody(t.body);
       })
@@ -95,6 +99,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         priority: editPriority,
         status: editStatus,
         dueDate: editDueDate || null,
+        epic: editEpic.trim() || null,
         tags: editTags ? editTags.split(',').map((t) => t.trim()).filter(Boolean) : [],
         body: editBody,
       });
@@ -241,12 +246,21 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
 
               <div className="form-field">
                 <label className="form-label">Epic</label>
+                <EpicSelect
+                  value={editEpic}
+                  onChange={setEditEpic}
+                  options={uniqueEpics}
+                />
+              </div>
+
+              <div className="form-field">
+                <label className="form-label">Tags</label>
                 <input
                   className="form-input"
                   type="text"
                   value={editTags}
                   onChange={(e) => setEditTags(e.target.value)}
-                  placeholder="comma, separated epics"
+                  placeholder="comma, separated tags"
                 />
               </div>
 
@@ -344,6 +358,12 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
                 <span className="modal-field-label">Due Date</span>
                 <span className="modal-field-value">
                   {task.dueDate ?? '—'}
+                </span>
+              </div>
+              <div className="modal-field">
+                <span className="modal-field-label">Epic</span>
+                <span className="modal-field-value">
+                  {task.epic ?? '—'}
                 </span>
               </div>
             </div>

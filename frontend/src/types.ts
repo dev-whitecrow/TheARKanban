@@ -11,6 +11,7 @@ export interface TaskFrontmatter {
   priority: TaskPriority;
   dueDate?: string;
   tags: string[];
+  epic?: string;
   createdAt: string;
   updatedAt: string;
 }

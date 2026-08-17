@@ -15,15 +15,11 @@
 
   --primary-color: #E2FD70; 
   
-  /* Priority Colors derived from Acid Lime (Ingenious derivation) */
-  /* Urgent: Sharp contrast neon red, as Acid Lime alone can't convey danger */
-  --priority-urgent: #FF4D4D; 
-  /* High: Acid Lime */
-  --priority-high: #E2FD70; 
-  /* Medium: Muted Lime */
-  --priority-medium: #8E9F46; 
-  /* Low: Structural Gray */
-  --priority-low: #4A5568; 
+  /* Priority Colors - Vibrant Semantic Colors */
+  --priority-urgent: #ef4444; /* Vibrant Red */
+  --priority-high: #f97316;   /* Vibrant Orange */
+  --priority-medium: #eab308; /* Vibrant Yellow */
+  --priority-low: #10b981;    /* Vibrant Green */
 
   /* Status Colors derived from Acid Lime */
   /* To Do: Structural Gray */
@@ -258,10 +254,10 @@ h1, h2, h3, .header-title, .modal-title {
   margin-right: 6px;
 }
 
-.priority-dot.urgent { background: var(--priority-urgent); }
-.priority-dot.high { background: var(--priority-high); }
-.priority-dot.medium { background: var(--priority-medium); }
-.priority-dot.low { background: var(--priority-low); }
+.priority-dot.urgent { background: var(--priority-urgent); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+.priority-dot.high { background: var(--priority-high); box-shadow: 0 0 8px rgba(249, 115, 22, 0.4); }
+.priority-dot.medium { background: var(--priority-medium); box-shadow: 0 0 8px rgba(234, 179, 8, 0.4); }
+.priority-dot.low { background: var(--priority-low); box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
 
 .task-card-id {
   display: flex;
@@ -313,6 +309,18 @@ h1, h2, h3, .header-title, .modal-title {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+}
+
+.epic-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  border-width: 1px;
+  border-style: solid;
+  background-color: rgba(255, 255, 255, 0.03);
+  text-transform: uppercase;
+  line-height: 1;
 }
 
 .task-tag {

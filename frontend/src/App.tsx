@@ -93,6 +93,17 @@ export default function App() {
     return Array.from(assignees).sort();
   }, [board]);
 
+  const uniqueEpics = React.useMemo(() => {
+    if (!board) return [];
+    const epics = new Set<string>();
+    board.columns.forEach(col => {
+      col.tasks.forEach(t => {
+        if (t.epic) epics.add(t.epic);
+      });
+    });
+    return Array.from(epics).sort();
+  }, [board]);
+
   // Load initial board state
   const loadBoard = useCallback(async () => {
     try {
@@ -265,6 +276,7 @@ export default function App() {
           onClose={() => setSelectedTaskId(null)}
           onUpdated={loadBoard}
           uniqueAssignees={uniqueAssignees}
+          uniqueEpics={uniqueEpics}
         />
       )}
 
@@ -275,6 +287,7 @@ export default function App() {
           onClose={() => setCreateForColumn(null)}
           onCreated={loadBoard}
           uniqueAssignees={uniqueAssignees}
+          uniqueEpics={uniqueEpics}
         />
       )}
     </>

@@ -31,6 +31,7 @@ export const TaskFrontmatterSchema = z.object({
     priority: TaskPriority.default('medium'),
     dueDate: z.string().optional(), // ISO date string
     tags: z.array(z.string()).default([]),
+    epic: z.string().optional(),
     createdAt: z.string(),
     updatedAt: z.string(),
 });
@@ -42,6 +43,7 @@ export const CreateTaskInputSchema = z.object({
     priority: TaskPriority.optional(),
     dueDate: z.string().optional(),
     tags: z.array(z.string()).optional(),
+    epic: z.string().optional(),
     body: z.string().optional(),
 });
 // ─── Update Task Input ─────────────────────────────────────────
@@ -52,6 +54,7 @@ export const UpdateTaskInputSchema = z.object({
     priority: TaskPriority.optional(),
     dueDate: z.string().nullable().optional(), // null to clear
     tags: z.array(z.string()).optional(),
+    epic: z.string().nullable().optional(), // null to clear
     body: z.string().optional(),
 });
 // ─── Kanban Meta Schema ────────────────────────────────────────

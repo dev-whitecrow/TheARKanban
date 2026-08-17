@@ -2,6 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { TaskFrontmatter } from './types';
+import { stringToColor } from './utils';
 
 const PRIORITY_EMOJI: Record<string, string> = {
   urgent: '🔴',
@@ -25,9 +26,13 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     isDragging,
   } = useSortable({ id: task.id, data: { task } });
 
+  const assigneeBgColor = task.assignee ? stringToColor(task.assignee, 70, 50, 0.04) : undefined;
+  const assigneeBorderColor = task.assignee ? stringToColor(task.assignee, 70, 50, 0.15) : undefined;
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    ...(assigneeBgColor ? { backgroundColor: assigneeBgColor, borderColor: assigneeBorderColor } : {})
   };
 
   return (
@@ -45,9 +50,25 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
       </div>
       <div className="task-card-title">{task.title}</div>
       <div className="task-card-meta">
+        {task.epic && (
+          <span 
+            className="epic-badge"
+            style={{
+              borderColor: stringToColor(task.epic, 70, 60, 1),
+              color: stringToColor(task.epic, 70, 75, 1)
+            }}
+          >
+            {task.epic}
+          </span>
+        )}
         {task.assignee ? (
           <div className="task-card-assignee">
-            <span className="avatar">{task.assignee[0]}</span>
+            <span 
+              className="avatar"
+              style={{ backgroundColor: stringToColor(task.assignee, 70, 50, 1) }}
+            >
+              {task.assignee[0].toUpperCase()}
+            </span>
             <span>{task.assignee}</span>
           </div>
         ) : (
@@ -78,9 +99,25 @@ export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
       </div>
       <div className="task-card-title">{task.title}</div>
       <div className="task-card-meta">
+        {task.epic && (
+          <span 
+            className="epic-badge"
+            style={{
+              borderColor: stringToColor(task.epic, 70, 60, 1),
+              color: stringToColor(task.epic, 70, 75, 1)
+            }}
+          >
+            {task.epic}
+          </span>
+        )}
         {task.assignee ? (
           <div className="task-card-assignee">
-            <span className="avatar">{task.assignee[0]}</span>
+            <span 
+              className="avatar"
+              style={{ backgroundColor: stringToColor(task.assignee, 70, 50, 1) }}
+            >
+              {task.assignee[0].toUpperCase()}
+            </span>
             <span>{task.assignee}</span>
           </div>
         ) : (

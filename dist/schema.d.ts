@@ -35,6 +35,7 @@ export declare const TaskFrontmatterSchema: z.ZodObject<{
     }>>;
     dueDate: z.ZodOptional<z.ZodString>;
     tags: z.ZodDefault<z.ZodArray<z.ZodString>>;
+    epic: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
 }, z.core.$strip>;
@@ -67,6 +68,7 @@ export declare const CreateTaskInputSchema: z.ZodObject<{
     }>>;
     dueDate: z.ZodOptional<z.ZodString>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    epic: z.ZodOptional<z.ZodString>;
     body: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export type CreateTaskInput = z.infer<typeof CreateTaskInputSchema>;
@@ -88,6 +90,7 @@ export declare const UpdateTaskInputSchema: z.ZodObject<{
     }>>;
     dueDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    epic: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     body: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export type UpdateTaskInput = z.infer<typeof UpdateTaskInputSchema>;

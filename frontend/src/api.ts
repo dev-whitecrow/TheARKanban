@@ -44,6 +44,7 @@ export async function createTaskApi(input: {
   assignee?: string;
   priority?: string;
   dueDate?: string;
+  epic?: string;
   tags?: string[];
   body?: string;
 }): Promise<void> {

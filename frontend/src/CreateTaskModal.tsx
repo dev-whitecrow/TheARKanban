@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import type { TaskStatus, TaskPriority } from './types';
 import { createTaskApi } from './api';
 import AssigneeSelect from './AssigneeSelect';
+import EpicSelect from './EpicSelect';
 
 interface CreateTaskModalProps {
   initialStatus: TaskStatus;
   onClose: () => void;
   onCreated: () => void;
   uniqueAssignees: string[];
+  uniqueEpics: string[];
 }
 
-export default function CreateTaskModal({ initialStatus, onClose, onCreated, uniqueAssignees }: CreateTaskModalProps) {
+export default function CreateTaskModal({ initialStatus, onClose, onCreated, uniqueAssignees, uniqueEpics }: CreateTaskModalProps) {
   const [title, setTitle] = useState('');
   const [assignee, setAssignee] = useState('');
   const [priority, setPriority] = useState<TaskPriority>('medium');
   const [dueDate, setDueDate] = useState('');
+  const [epic, setEpic] = useState('');
   const [tagsStr, setTagsStr] = useState('');
   const [body, setBody] = useState('');
   const [saving, setSaving] = useState(false);
@@ -41,6 +44,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
         assignee: assignee.trim() || undefined,
         priority,
         dueDate: dueDate || undefined,
+        epic: epic.trim() || undefined,
         tags: tagsStr ? tagsStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
         body: body || undefined,
       });
@@ -113,14 +117,23 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
             </div>
             <div className="form-field">
               <label className="form-label">Epic</label>
-              <input
-                className="form-input"
-                type="text"
-                value={tagsStr}
-                onChange={(e) => setTagsStr(e.target.value)}
-                placeholder="comma, separated epics"
+              <EpicSelect
+                value={epic}
+                onChange={setEpic}
+                options={uniqueEpics}
               />
             </div>
+          </div>
+
+          <div className="form-field">
+            <label className="form-label">Tags</label>
+            <input
+              className="form-input"
+              type="text"
+              value={tagsStr}
+              onChange={(e) => setTagsStr(e.target.value)}
+              placeholder="comma, separated tags"
+            />
           </div>
 
           <div className="form-field">
