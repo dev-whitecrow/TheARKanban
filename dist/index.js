@@ -40,7 +40,8 @@ async function main() {
         }
         catch (err) {
             consola.error('Discord bot failed to start:', err);
-            consola.warn('Server will continue without Discord integration');
+            consola.error('Exiting process to allow PM2 to auto-restart...');
+            process.exit(1);
         }
     }
     else {
