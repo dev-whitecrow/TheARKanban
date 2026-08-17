@@ -73,6 +73,12 @@ export async function updateTask(existingTask, input, source = 'api') {
         else if (input.dueDate !== undefined) {
             updatedFrontmatter.dueDate = input.dueDate;
         }
+        if (input.epic === null) {
+            updatedFrontmatter.epic = undefined;
+        }
+        else if (input.epic !== undefined) {
+            updatedFrontmatter.epic = input.epic;
+        }
         updatedFrontmatter.updatedAt = now;
         // Build activity log entry
         const changes = [];

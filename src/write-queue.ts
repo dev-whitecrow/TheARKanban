@@ -109,6 +109,12 @@ export async function updateTask(
       updatedFrontmatter.dueDate = input.dueDate;
     }
 
+    if (input.epic === null) {
+      updatedFrontmatter.epic = undefined;
+    } else if (input.epic !== undefined) {
+      updatedFrontmatter.epic = input.epic;
+    }
+
     updatedFrontmatter.updatedAt = now;
 
     // Build activity log entry

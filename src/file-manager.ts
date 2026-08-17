@@ -121,6 +121,7 @@ export function buildNewTask(id: string, input: CreateTaskInput): Task {
     priority: input.priority ?? 'medium',
     dueDate: input.dueDate,
     tags: input.tags ?? [],
+    epic: input.epic,
     createdAt: now,
     updatedAt: now,
   };
