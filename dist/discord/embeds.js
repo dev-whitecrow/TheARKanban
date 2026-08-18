@@ -31,8 +31,8 @@ export function buildTaskEmbed(task) {
     if (task.dueDate) {
         embed.addFields({ name: 'Due Date', value: task.dueDate, inline: true });
     }
-    if (task.tags.length > 0) {
-        embed.addFields({ name: 'Epic', value: task.tags.map((t) => `\`${t}\``).join(' '), inline: false });
+    if (task.epic) {
+        embed.addFields({ name: 'Epic', value: `\`${task.epic}\``, inline: true });
     }
     return embed;
 }
@@ -94,7 +94,7 @@ export function buildChangeNotificationEmbed(type, task, source) {
         .setDescription(`${action.emoji} **${task.id}** ${action.label.toLowerCase()}: "${task.title}"` +
         `\nStatus: \`${task.status}\` | Priority: ${PRIORITY_EMOJI[task.priority] ?? '⚪'} ${task.priority}` +
         (task.assignee ? `\nAssignee: ${task.assignee}` : '') +
-        (task.tags.length > 0 ? `\nEpic: ${task.tags.map(t => `\`${t}\``).join(' ')}` : '') +
+        (task.epic ? `\nEpic: \`${task.epic}\`` : '') +
         `\n_via ${source}_`)
         .setTimestamp();
 }

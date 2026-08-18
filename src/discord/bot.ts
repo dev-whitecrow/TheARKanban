@@ -43,7 +43,7 @@ const taskCommand = new SlashCommandBuilder()
           ),
       )
       .addStringOption((opt) =>
-        opt.setName('epic').setDescription('Comma-separated epics').setRequired(false),
+        opt.setName('epic').setDescription('Epic name (e.g., Marketing)').setRequired(false),
       ),
   )
   .addSubcommand((sub) =>
@@ -124,10 +124,9 @@ async function handleTaskCommand(interaction: ChatInputCommandInteraction): Prom
       const title = interaction.options.getString('title', true);
       const assignee = interaction.options.getString('assignee') ?? undefined;
       const priority = (interaction.options.getString('priority') as any) ?? undefined;
-      const epicStr = interaction.options.getString('epic');
-      const tags = epicStr ? epicStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined;
+      const epic = interaction.options.getString('epic') ?? undefined;
 
-      const task = await createTask({ title, assignee, priority, tags }, 'discord');
+      const task = await createTask({ title, assignee, priority, epic }, 'discord');
       await interaction.reply({ embeds: [buildTaskEmbed(task.frontmatter)] });
       break;
     }

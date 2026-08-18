@@ -18,7 +18,7 @@ const taskCommand = new SlashCommandBuilder()
     .setDescription('Priority level')
     .setRequired(false)
     .addChoices({ name: '🔴 Urgent', value: 'urgent' }, { name: '🟠 High', value: 'high' }, { name: '🟡 Medium', value: 'medium' }, { name: '🟢 Low', value: 'low' }))
-    .addStringOption((opt) => opt.setName('epic').setDescription('Comma-separated epics').setRequired(false)))
+    .addStringOption((opt) => opt.setName('epic').setDescription('Epic name (e.g., Marketing)').setRequired(false)))
     .addSubcommand((sub) => sub
     .setName('list')
     .setDescription('List stories')
@@ -58,9 +58,8 @@ async function handleTaskCommand(interaction) {
             const title = interaction.options.getString('title', true);
             const assignee = interaction.options.getString('assignee') ?? undefined;
             const priority = interaction.options.getString('priority') ?? undefined;
-            const epicStr = interaction.options.getString('epic');
-            const tags = epicStr ? epicStr.split(',').map((t) => t.trim()).filter(Boolean) : undefined;
-            const task = await createTask({ title, assignee, priority, tags }, 'discord');
+            const epic = interaction.options.getString('epic') ?? undefined;
+            const task = await createTask({ title, assignee, priority, epic }, 'discord');
             await interaction.reply({ embeds: [buildTaskEmbed(task.frontmatter)] });
             break;
         }
