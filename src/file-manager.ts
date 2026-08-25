@@ -11,6 +11,8 @@ import {
   type KanbanMeta,
   type CreateTaskInput,
 } from './schema.js';
+import { getKSTISOString } from './utils.js';
+
 
 // ─── Paths ─────────────────────────────────────────────────────
 const ROOT_DIR = process.cwd();
@@ -112,7 +114,7 @@ export async function deleteTaskFile(filePath: string): Promise<void> {
  * Build a Task object from CreateTaskInput + generated ID.
  */
 export function buildNewTask(id: string, input: CreateTaskInput): Task {
-  const now = new Date().toISOString();
+  const now = getKSTISOString();
   const frontmatter: TaskFrontmatter = {
     id,
     title: input.title,

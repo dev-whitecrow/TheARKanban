@@ -1,5 +1,6 @@
 import { consola } from 'consola';
 import { taskEvents } from '../write-queue.js';
+import { getKSTISOString } from '../utils.js';
 // Track connected SSE clients
 const clients = new Set();
 export function registerSSE(app) {
@@ -33,7 +34,7 @@ export function registerSSE(app) {
             type: event.type,
             task: event.task.frontmatter,
             source: event.source,
-            timestamp: new Date().toISOString(),
+            timestamp: getKSTISOString(),
         });
         for (const client of clients) {
             client.write(`event: ${event.type}\ndata: ${data}\n\n`);

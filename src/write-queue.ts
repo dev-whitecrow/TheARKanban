@@ -17,6 +17,7 @@ import {
 } from './schema.js';
 import path from 'node:path';
 import { getTasksDir } from './file-manager.js';
+import { getKSTISOString } from './utils.js';
 
 // ─── Events ────────────────────────────────────────────────────
 export type TaskEventType = 'task:created' | 'task:updated' | 'task:deleted';
@@ -87,7 +88,7 @@ export async function updateTask(
       }
     }
 
-    const now = new Date().toISOString();
+    const now = getKSTISOString();
 
     // Build updated frontmatter
     const updatedFrontmatter = { ...existingTask.frontmatter };
@@ -180,7 +181,7 @@ export async function addNote(
   source: string = 'api',
 ): Promise<Task> {
   return enqueue(async () => {
-    const now = new Date().toISOString();
+    const now = getKSTISOString();
     const logEntry = `- [${now.slice(0, 16).replace('T', ' ')}] ${author}: ${note}`;
 
     let body = existingTask.body;

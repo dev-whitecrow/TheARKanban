@@ -9,10 +9,11 @@ import {
 } from './file-manager.js';
 import { taskEvents, type TaskEvent } from './write-queue.js';
 import type { Task, TaskFrontmatter, BoardState, TaskStatus, KanbanMeta } from './schema.js';
+import { getKSTISOString } from './utils.js';
 
 // ─── In-Memory State ───────────────────────────────────────────
 const taskMap = new Map<string, Task>();
-let lastSyncTime: string = new Date().toISOString();
+let lastSyncTime: string = getKSTISOString();
 let kanbanMeta: KanbanMeta | null = null;
 
 // Debounce tracking for chokidar
@@ -75,12 +76,12 @@ export function getHealthInfo() {
 
 function upsertTask(task: Task): void {
   taskMap.set(task.frontmatter.id, task);
-  lastSyncTime = new Date().toISOString();
+  lastSyncTime = getKSTISOString();
 }
 
 function removeFromState(id: string): void {
   taskMap.delete(id);
-  lastSyncTime = new Date().toISOString();
+  lastSyncTime = getKSTISOString();
 }
 
 // ─── Initialization ────────────────────────────────────────────
@@ -100,7 +101,7 @@ export async function initStateManager(): Promise<void> {
   for (const task of tasks) {
     taskMap.set(task.frontmatter.id, task);
   }
-  lastSyncTime = new Date().toISOString();
+  lastSyncTime = getKSTISOString();
   consola.info(`State initialized with ${taskMap.size} task(s)`);
 
   // 2. Start file watcher

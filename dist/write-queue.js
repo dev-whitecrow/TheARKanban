@@ -3,6 +3,7 @@ import { EventEmitter } from 'node:events';
 import { consola } from 'consola';
 import { writeTaskFile, deleteTaskFile, getNextId, buildNewTask, } from './file-manager.js';
 import { isValidTransition, } from './schema.js';
+import { getKSTISOString } from './utils.js';
 // ─── Write Queue ───────────────────────────────────────────────
 const mutex = new Mutex();
 export const taskEvents = new EventEmitter();
@@ -49,7 +50,7 @@ export async function updateTask(existingTask, input, source = 'api') {
                 throw new Error(`Invalid status transition: ${existingTask.frontmatter.status} → ${input.status}`);
             }
         }
-        const now = new Date().toISOString();
+        const now = getKSTISOString();
         // Build updated frontmatter
         const updatedFrontmatter = { ...existingTask.frontmatter };
         if (input.title !== undefined)
@@ -128,7 +129,7 @@ export async function moveTask(existingTask, newStatus, source = 'api') {
  */
 export async function addNote(existingTask, note, author, source = 'api') {
     return enqueue(async () => {
-        const now = new Date().toISOString();
+        const now = getKSTISOString();
         const logEntry = `- [${now.slice(0, 16).replace('T', ' ')}] ${author}: ${note}`;
         let body = existingTask.body;
         if (body.includes('## Activity Log')) {

@@ -3,9 +3,10 @@ import chokidar from 'chokidar';
 import { consola } from 'consola';
 import { scanAllTasks, parseTaskFile, readMeta, getTasksDir, } from './file-manager.js';
 import { taskEvents } from './write-queue.js';
+import { getKSTISOString } from './utils.js';
 // ─── In-Memory State ───────────────────────────────────────────
 const taskMap = new Map();
-let lastSyncTime = new Date().toISOString();
+let lastSyncTime = getKSTISOString();
 let kanbanMeta = null;
 // Debounce tracking for chokidar
 const pendingChanges = new Map();
@@ -58,11 +59,11 @@ export function getHealthInfo() {
 // ─── State Mutation (internal only) ────────────────────────────
 function upsertTask(task) {
     taskMap.set(task.frontmatter.id, task);
-    lastSyncTime = new Date().toISOString();
+    lastSyncTime = getKSTISOString();
 }
 function removeFromState(id) {
     taskMap.delete(id);
-    lastSyncTime = new Date().toISOString();
+    lastSyncTime = getKSTISOString();
 }
 // ─── Initialization ────────────────────────────────────────────
 /**
@@ -79,7 +80,7 @@ export async function initStateManager() {
     for (const task of tasks) {
         taskMap.set(task.frontmatter.id, task);
     }
-    lastSyncTime = new Date().toISOString();
+    lastSyncTime = getKSTISOString();
     consola.info(`State initialized with ${taskMap.size} task(s)`);
     // 2. Start file watcher
     startFileWatcher();

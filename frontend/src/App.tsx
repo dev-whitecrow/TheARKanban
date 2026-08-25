@@ -81,6 +81,9 @@ export default function App() {
   const [activeTask, setActiveTask] = useState<TaskFrontmatter | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createForColumn, setCreateForColumn] = useState<TaskStatus | null>(null);
+  const [selectedEpics, setSelectedEpics] = useState<Set<string>>(new Set());
+  const [showEpicFilter, setShowEpicFilter] = useState(false);
+
 
   const uniqueAssignees = React.useMemo(() => {
     if (!board) return [];
@@ -233,6 +236,48 @@ export default function App() {
           <span>MNDK</span>
         </div>
         <div className="header-stats">
+          <div style={{ position: 'relative' }}>
+            <button
+              className="btn btn-secondary"
+              style={{ padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => setShowEpicFilter(!showEpicFilter)}
+            >
+              Filter Epic {selectedEpics.size > 0 && `(${selectedEpics.size})`}
+            </button>
+            {showEpicFilter && (
+              <div className="assignee-dropdown" style={{ right: 0, left: 'auto', minWidth: 200, padding: 8 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, padding: '0 4px', fontWeight: 600, textTransform: 'uppercase' }}>Select Epics</div>
+                {uniqueEpics.length === 0 ? (
+                  <div className="assignee-option empty">No epics</div>
+                ) : (
+                  uniqueEpics.map(epic => (
+                    <label key={epic} className="assignee-option" style={{ display: 'flex', gap: '8px', cursor: 'pointer', padding: '4px 8px' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={selectedEpics.has(epic)}
+                        onChange={(e) => {
+                          const next = new Set(selectedEpics);
+                          if (e.target.checked) next.add(epic);
+                          else next.delete(epic);
+                          setSelectedEpics(next);
+                        }}
+                      />
+                      {epic}
+                    </label>
+                  ))
+                )}
+                {selectedEpics.size > 0 && (
+                  <button 
+                    className="btn btn-secondary" 
+                    style={{ width: '100%', marginTop: 8, padding: '4px', fontSize: 11 }}
+                    onClick={() => setSelectedEpics(new Set())}
+                  >
+                    Clear Filter
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
           <div className="stat-badge">
             <span className="count">{board?.totalTasks ?? 0}</span>
             <span>stories</span>
@@ -257,7 +302,7 @@ export default function App() {
               key={col.id}
               id={col.id}
               label={col.label}
-              tasks={col.tasks}
+              tasks={col.tasks.filter(t => selectedEpics.size === 0 || (t.epic && selectedEpics.has(t.epic)))}
               onCardClick={setSelectedTaskId}
               onAddClick={setCreateForColumn}
             />

@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { glob } from 'glob';
 import { consola } from 'consola';
 import { TaskFrontmatterSchema, KanbanMetaSchema, } from './schema.js';
+import { getKSTISOString } from './utils.js';
 // ─── Paths ─────────────────────────────────────────────────────
 const ROOT_DIR = process.cwd();
 const TASKS_DIR = path.join(ROOT_DIR, 'data', 'tasks');
@@ -93,7 +94,7 @@ export async function deleteTaskFile(filePath) {
  * Build a Task object from CreateTaskInput + generated ID.
  */
 export function buildNewTask(id, input) {
-    const now = new Date().toISOString();
+    const now = getKSTISOString();
     const frontmatter = {
         id,
         title: input.title,
