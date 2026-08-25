@@ -5,6 +5,7 @@ import { consola } from 'consola';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initStateManager } from './state-manager.js';
+import { startCronJob } from './cron.js';
 import { createApiRouter } from './api/routes.js';
 import { registerSSE } from './api/sse.js';
 
@@ -17,6 +18,9 @@ async function main() {
 
   // 1. Initialize the state manager (scan files + start watcher)
   await initStateManager();
+
+  // 1.5. Start recurring tasks cron
+  startCronJob();
 
   // 2. Create Express app
   const app = express();

@@ -35,10 +35,18 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     ...(assigneeBgColor ? { backgroundColor: assigneeBgColor, borderColor: assigneeBorderColor } : {})
   };
 
+  // Apply orange border if it's a generated recurring instance
+  const cardStyle = task.isRecurringInstance 
+    ? { border: '1px solid var(--priority-high)' } 
+    : undefined;
+
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        ...cardStyle,
+      }}
       className={`task-card ${isDragging ? 'dragging' : ''}`}
       onClick={() => onClick(task.id)}
       {...attributes}
@@ -91,8 +99,12 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
 
 // Overlay version used during drag
 export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
+  const cardStyle = task.isRecurringInstance 
+    ? { border: '1px solid var(--priority-high)' } 
+    : undefined;
+
   return (
-    <div className="task-card drag-overlay">
+    <div className="task-card drag-overlay" style={cardStyle}>
       <div className="task-card-id">
         <span className={`priority-dot ${task.priority}`} />
         {task.id}

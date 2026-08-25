@@ -5,6 +5,7 @@ import { consola } from 'consola';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initStateManager } from './state-manager.js';
+import { startCronJob } from './cron.js';
 import { createApiRouter } from './api/routes.js';
 import { registerSSE } from './api/sse.js';
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
@@ -14,6 +15,8 @@ async function main() {
     consola.box('🌌 MNDK — Markdown-Native Discord Kanban');
     // 1. Initialize the state manager (scan files + start watcher)
     await initStateManager();
+    // 1.5. Start recurring tasks cron
+    startCronJob();
     // 2. Create Express app
     const app = express();
     app.use(cors());

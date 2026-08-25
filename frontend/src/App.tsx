@@ -17,9 +17,10 @@ import { useDroppable } from '@dnd-kit/core';
 import TaskCard, { TaskCardOverlay } from './TaskCard';
 import TaskDetailModal from './TaskDetailModal';
 import CreateTaskModal from './CreateTaskModal';
+import { RecurringTemplatesModal } from './RecurringTemplatesModal';
 import { useSSE } from './useSSE';
 import { fetchBoard, moveTask } from './api';
-import type { BoardState, TaskFrontmatter, TaskStatus } from './types';
+import type { BoardState, TaskFrontmatter, TaskStatus, Column } from './types';
 
 // ─── Droppable Column Component ────────────────────────────────
 function DroppableColumn({
@@ -83,6 +84,7 @@ export default function App() {
   const [createForColumn, setCreateForColumn] = useState<TaskStatus | null>(null);
   const [selectedEpics, setSelectedEpics] = useState<Set<string>>(new Set());
   const [showEpicFilter, setShowEpicFilter] = useState(false);
+  const [showRecurringModal, setShowRecurringModal] = useState(false);
 
 
   const uniqueAssignees = React.useMemo(() => {
@@ -236,6 +238,13 @@ export default function App() {
           <span>MNDK</span>
         </div>
         <div className="header-stats">
+          <button
+            className="btn btn-secondary"
+            style={{ padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            onClick={() => setShowRecurringModal(true)}
+          >
+            <span style={{ color: 'var(--priority-high)' }}>🔄</span> Recurring
+          </button>
           <div style={{ position: 'relative' }}>
             <button
               className="btn btn-secondary"
@@ -315,6 +324,17 @@ export default function App() {
       </DndContext>
 
       {/* Task Detail Modal */}
+      {showRecurringModal && board && (
+        <RecurringTemplatesModal
+          templates={board.templates || []}
+          onClose={() => setShowRecurringModal(false)}
+          onCardClick={(id) => {
+            // we do NOT close the recurring modal, just open the detail modal on top
+            setSelectedTaskId(id);
+          }}
+        />
+      )}
+
       {selectedTaskId && (
         <TaskDetailModal
           taskId={selectedTaskId}

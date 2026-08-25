@@ -80,6 +80,20 @@ export async function updateTask(existingTask, input, source = 'api') {
         else if (input.epic !== undefined) {
             updatedFrontmatter.epic = input.epic;
         }
+        if (input.isTemplate !== undefined)
+            updatedFrontmatter.isTemplate = input.isTemplate;
+        if (input.recurrence === null) {
+            updatedFrontmatter.recurrence = undefined;
+        }
+        else if (input.recurrence !== undefined) {
+            updatedFrontmatter.recurrence = input.recurrence;
+        }
+        if (input.nextRecurAt === null) {
+            updatedFrontmatter.nextRecurAt = undefined;
+        }
+        else if (input.nextRecurAt !== undefined) {
+            updatedFrontmatter.nextRecurAt = input.nextRecurAt;
+        }
         updatedFrontmatter.updatedAt = now;
         // Build activity log entry
         const changes = [];

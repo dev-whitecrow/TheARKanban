@@ -41,12 +41,15 @@ export function getTasksByAssignee(assignee: string): Task[] {
 export async function getBoardState(): Promise<BoardState> {
   const meta = kanbanMeta ?? await readMeta();
   const allTasks = getAllTasks();
+  
+  const activeTasks = allTasks.filter(t => !t.frontmatter.isTemplate);
+  const templates = allTasks.filter(t => t.frontmatter.isTemplate).map(t => t.frontmatter);
 
   return {
     columns: meta.columns.map((colId) => ({
       id: colId,
       label: meta.columnLabels[colId] ?? colId,
-      tasks: allTasks
+      tasks: activeTasks
         .filter((t) => t.frontmatter.status === colId)
         .sort((a, b) => {
           // Sort by priority (urgent > high > medium > low), then by updatedAt desc
@@ -58,7 +61,8 @@ export async function getBoardState(): Promise<BoardState> {
         })
         .map((t) => t.frontmatter),
     })),
-    totalTasks: allTasks.length,
+    templates,
+    totalTasks: activeTasks.length,
     lastSync: lastSyncTime,
   };
 }

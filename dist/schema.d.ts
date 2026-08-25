@@ -38,6 +38,14 @@ export declare const TaskFrontmatterSchema: z.ZodObject<{
     epic: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
+    isTemplate: z.ZodOptional<z.ZodBoolean>;
+    recurrence: z.ZodOptional<z.ZodEnum<{
+        daily: "daily";
+        monthly: "monthly";
+        weekly: "weekly";
+    }>>;
+    nextRecurAt: z.ZodOptional<z.ZodString>;
+    isRecurringInstance: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 export type TaskFrontmatter = z.infer<typeof TaskFrontmatterSchema>;
 /**
@@ -70,6 +78,14 @@ export declare const CreateTaskInputSchema: z.ZodObject<{
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
     epic: z.ZodOptional<z.ZodString>;
     body: z.ZodOptional<z.ZodString>;
+    isTemplate: z.ZodOptional<z.ZodBoolean>;
+    recurrence: z.ZodOptional<z.ZodEnum<{
+        daily: "daily";
+        monthly: "monthly";
+        weekly: "weekly";
+    }>>;
+    nextRecurAt: z.ZodOptional<z.ZodString>;
+    isRecurringInstance: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 export type CreateTaskInput = z.infer<typeof CreateTaskInputSchema>;
 export declare const UpdateTaskInputSchema: z.ZodObject<{
@@ -92,6 +108,13 @@ export declare const UpdateTaskInputSchema: z.ZodObject<{
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
     epic: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     body: z.ZodOptional<z.ZodString>;
+    isTemplate: z.ZodOptional<z.ZodBoolean>;
+    recurrence: z.ZodOptional<z.ZodNullable<z.ZodEnum<{
+        daily: "daily";
+        monthly: "monthly";
+        weekly: "weekly";
+    }>>>;
+    nextRecurAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$strip>;
 export type UpdateTaskInput = z.infer<typeof UpdateTaskInputSchema>;
 export declare const KanbanMetaSchema: z.ZodObject<{
@@ -118,6 +141,7 @@ export interface BoardState {
         label: string;
         tasks: TaskFrontmatter[];
     }[];
+    templates: TaskFrontmatter[];
     totalTasks: number;
     lastSync: string;
 }

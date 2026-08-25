@@ -34,6 +34,10 @@ export const TaskFrontmatterSchema = z.object({
     epic: z.string().optional(),
     createdAt: z.string(),
     updatedAt: z.string(),
+    isTemplate: z.boolean().optional(),
+    recurrence: z.enum(['daily', 'weekly', 'monthly']).optional(),
+    nextRecurAt: z.string().optional(),
+    isRecurringInstance: z.boolean().optional(),
 });
 // ─── Create Task Input (for API/CLI/Discord) ───────────────────
 export const CreateTaskInputSchema = z.object({
@@ -45,6 +49,10 @@ export const CreateTaskInputSchema = z.object({
     tags: z.array(z.string()).optional(),
     epic: z.string().optional(),
     body: z.string().optional(),
+    isTemplate: z.boolean().optional(),
+    recurrence: z.enum(['daily', 'weekly', 'monthly']).optional(),
+    nextRecurAt: z.string().optional(),
+    isRecurringInstance: z.boolean().optional(),
 });
 // ─── Update Task Input ─────────────────────────────────────────
 export const UpdateTaskInputSchema = z.object({
@@ -56,6 +64,9 @@ export const UpdateTaskInputSchema = z.object({
     tags: z.array(z.string()).optional(),
     epic: z.string().nullable().optional(), // null to clear
     body: z.string().optional(),
+    isTemplate: z.boolean().optional(),
+    recurrence: z.enum(['daily', 'weekly', 'monthly']).nullable().optional(), // null to clear
+    nextRecurAt: z.string().nullable().optional(),
 });
 // ─── Kanban Meta Schema ────────────────────────────────────────
 export const KanbanMetaSchema = z.object({

@@ -14,6 +14,10 @@ export interface TaskFrontmatter {
   epic?: string;
   createdAt: string;
   updatedAt: string;
+  isTemplate?: boolean;
+  recurrence?: 'daily' | 'weekly' | 'monthly';
+  nextRecurAt?: string;
+  isRecurringInstance?: boolean;
 }
 
 export interface TaskDetail extends TaskFrontmatter {
@@ -27,7 +31,12 @@ export interface Column {
 }
 
 export interface BoardState {
-  columns: Column[];
+  columns: {
+    id: string;
+    label: string;
+    tasks: TaskFrontmatter[];
+  }[];
+  templates: TaskFrontmatter[];
   totalTasks: number;
   lastSync: string;
 }

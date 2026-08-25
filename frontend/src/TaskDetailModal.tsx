@@ -47,6 +47,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
   const [editEpic, setEditEpic] = useState('');
   const [editTags, setEditTags] = useState('');
   const [editBody, setEditBody] = useState('');
+  const [editRecurrence, setEditRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
 
   const loadTask = () => {
     fetchTaskDetail(taskId)
@@ -60,6 +61,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         setEditEpic(t.epic ?? '');
         setEditTags(t.tags.join(', '));
         setEditBody(t.body);
+        setEditRecurrence(t.recurrence ?? 'none');
       })
       .catch((err) => setError(err.message));
   };
@@ -102,6 +104,8 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         epic: editEpic.trim() || null,
         tags: editTags ? editTags.split(',').map((t) => t.trim()).filter(Boolean) : [],
         body: editBody,
+        recurrence: editRecurrence === 'none' ? null : editRecurrence,
+        isTemplate: editRecurrence !== 'none' ? true : null,
       });
       setEditing(false);
       onUpdated();
@@ -253,15 +257,30 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
                 />
               </div>
 
-              <div className="form-field">
-                <label className="form-label">Tags</label>
-                <input
-                  className="form-input"
-                  type="text"
-                  value={editTags}
-                  onChange={(e) => setEditTags(e.target.value)}
-                  placeholder="comma, separated tags"
-                />
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Tags</label>
+                  <input
+                    className="form-input"
+                    type="text"
+                    value={editTags}
+                    onChange={(e) => setEditTags(e.target.value)}
+                    placeholder="comma, separated tags"
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Recurrence</label>
+                  <select
+                    className="form-input form-select"
+                    value={editRecurrence}
+                    onChange={(e) => setEditRecurrence(e.target.value as any)}
+                  >
+                    <option value="none">None</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
               </div>
 
               <div className="form-field">
@@ -364,6 +383,12 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
                 <span className="modal-field-label">Epic</span>
                 <span className="modal-field-value">
                   {task.epic ?? '—'}
+                </span>
+              </div>
+              <div className="modal-field">
+                <span className="modal-field-label">Recurrence</span>
+                <span className="modal-field-value" style={task.recurrence ? { color: 'var(--priority-high)' } : {}}>
+                  {task.recurrence ? `${task.recurrence} 🔄` : '—'}
                 </span>
               </div>
             </div>
