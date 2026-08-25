@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 
 interface TaskDetailModalProps {
   taskId: string;
+  initialTask?: Omit<TaskDetail, 'body'> | null;
   onClose: () => void;
   onUpdated: () => void;
   uniqueAssignees: string[];
@@ -31,8 +32,13 @@ const PRIORITY_EMOJI: Record<string, string> = {
 import AssigneeSelect from './AssigneeSelect';
 import EpicSelect from './EpicSelect';
 
-export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssignees, uniqueEpics }: TaskDetailModalProps) {
-  const [task, setTask] = useState<TaskDetail | null>(null);
+export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdated, uniqueAssignees, uniqueEpics }: TaskDetailModalProps) {
+  // Pre-hydrate state if initialTask is provided, otherwise null. 
+  // We'll set body to an empty string temporarily.
+  const [task, setTask] = useState<TaskDetail | null>(
+    initialTask ? { ...initialTask, body: '' } : null
+  );
+  const [loadingBody, setLoadingBody] = useState(!task?.body);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -50,6 +56,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
   const [editRecurrence, setEditRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
 
   const loadTask = () => {
+    setLoadingBody(true);
     fetchTaskDetail(taskId)
       .then((t) => {
         setTask(t);
@@ -62,8 +69,12 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
         setEditTags(t.tags.join(', '));
         setEditBody(t.body);
         setEditRecurrence(t.recurrence ?? 'none');
+        setLoadingBody(false);
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => {
+        setError(err.message);
+        setLoadingBody(false);
+      });
   };
 
   useEffect(() => {
@@ -402,19 +413,25 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated, uniqueAssi
             )}
 
             <div className="modal-body markdown-body" onClick={handleMarkdownClick}>
-              <ReactMarkdown 
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  input: ({node, disabled, ...props}) => {
-                    if (props.type === 'checkbox') {
-                      return <input {...props} disabled={false} style={{ cursor: 'pointer' }} />;
+              {loadingBody ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
+                  <div className="loading-spinner" style={{ width: 24, height: 24, borderWidth: 3 }} />
+                </div>
+              ) : (
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    input: ({node, disabled, ...props}) => {
+                      if (props.type === 'checkbox') {
+                        return <input {...props} disabled={false} style={{ cursor: 'pointer' }} />;
+                      }
+                      return <input {...props} disabled={disabled} />;
                     }
-                    return <input {...props} disabled={disabled} />;
-                  }
-                }}
-              >
-                {task.body || 'No notes yet.'}
-              </ReactMarkdown>
+                  }}
+                >
+                  {task.body || 'No notes yet.'}
+                </ReactMarkdown>
+              )}
             </div>
           </>
         )}

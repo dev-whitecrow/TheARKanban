@@ -338,6 +338,11 @@ export default function App() {
       {selectedTaskId && (
         <TaskDetailModal
           taskId={selectedTaskId}
+          initialTask={
+            board?.columns.flatMap(c => c.tasks).find(t => t.id === selectedTaskId) ||
+            board?.templates?.find(t => t.id === selectedTaskId) ||
+            null
+          }
           onClose={() => setSelectedTaskId(null)}
           onUpdated={loadBoard}
           uniqueAssignees={uniqueAssignees}
