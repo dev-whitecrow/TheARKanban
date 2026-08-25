@@ -20,7 +20,15 @@ async function main() {
     startCronJob();
     // 2. Create Express app
     const app = express();
-    app.use(compression()); // Gzip compression
+    app.use(compression({
+        filter: (req, res) => {
+            if (req.headers['accept'] === 'text/event-stream') {
+                // Don't compress SSE streams, it breaks flushing!
+                return false;
+            }
+            return compression.filter(req, res);
+        }
+    })); // Gzip compression
     app.use(cors());
     app.use(express.json());
     // 3. Register REST API routes
