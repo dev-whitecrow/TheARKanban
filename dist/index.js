@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import { consola } from 'consola';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,13 +20,26 @@ async function main() {
     startCronJob();
     // 2. Create Express app
     const app = express();
+    app.use(compression()); // Gzip compression
     app.use(cors());
     app.use(express.json());
     // 3. Register REST API routes
     app.use(createApiRouter());
     // Serve Frontend Static Files
     const frontendDistPath = path.join(__dirname, '../frontend/dist');
-    app.use(express.static(frontendDistPath));
+    // Cache hashed Vite assets for 1 year
+    app.use('/assets', express.static(path.join(frontendDistPath, 'assets'), {
+        maxAge: '1y',
+        immutable: true,
+    }));
+    // Serve other files (like index.html) with no-cache so browser always checks for updates
+    app.use(express.static(frontendDistPath, {
+        setHeaders: (res, filePath) => {
+            if (filePath.endsWith('index.html')) {
+                res.setHeader('Cache-Control', 'no-cache');
+            }
+        }
+    }));
     // Handle React Router fallback (if not an API route, send index.html)
     app.use((req, res, next) => {
         if (req.path.startsWith('/api/') || req.path === '/health') {
