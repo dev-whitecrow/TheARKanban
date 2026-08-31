@@ -75,10 +75,10 @@ describe('Write Queue — Concurrency', () => {
     const uniqueIds = new Set(ids);
     expect(uniqueIds.size).toBe(10);
 
-    // IDs should be sequential: TASK-001 through TASK-010
+    // IDs should be sequential: STORY-001 through STORY-010
     const sortedIds = ids.sort();
-    expect(sortedIds[0]).toBe('TASK-001');
-    expect(sortedIds[9]).toBe('TASK-010');
+    expect(sortedIds[0]).toBe('STORY-001');
+    expect(sortedIds[9]).toBe('STORY-010');
 
     // Verify all files exist on disk
     for (const task of results) {
@@ -105,7 +105,7 @@ describe('Write Queue — Concurrency', () => {
       dueDate: '2026-08-20',
     }, 'test');
 
-    expect(task.frontmatter.id).toMatch(/^TASK-\d+$/);
+    expect(task.frontmatter.id).toMatch(/^STORY-\d+$/);
     expect(task.frontmatter.title).toBe('Schema Validation Test');
     expect(task.frontmatter.status).toBe('todo');
     expect(task.frontmatter.priority).toBe('high');

@@ -35,7 +35,7 @@ export const TaskFrontmatterSchema = z.object({
     createdAt: z.string(),
     updatedAt: z.string(),
     isTemplate: z.boolean().optional(),
-    recurrence: z.enum(['daily', 'weekly', 'monthly']).optional(),
+    recurrence: z.enum(['daily', 'weekly']).optional(),
     nextRecurAt: z.string().optional(),
     isRecurringInstance: z.boolean().optional(),
 });
@@ -50,7 +50,7 @@ export const CreateTaskInputSchema = z.object({
     epic: z.string().optional(),
     body: z.string().optional(),
     isTemplate: z.boolean().optional(),
-    recurrence: z.enum(['daily', 'weekly', 'monthly']).optional(),
+    recurrence: z.enum(['daily', 'weekly']).optional(),
     nextRecurAt: z.string().optional(),
     isRecurringInstance: z.boolean().optional(),
 });
@@ -65,7 +65,7 @@ export const UpdateTaskInputSchema = z.object({
     epic: z.string().nullable().optional(), // null to clear
     body: z.string().optional(),
     isTemplate: z.boolean().optional(),
-    recurrence: z.enum(['daily', 'weekly', 'monthly']).nullable().optional(), // null to clear
+    recurrence: z.enum(['daily', 'weekly']).nullable().optional(), // null to clear
     nextRecurAt: z.string().nullable().optional(),
 });
 // ─── Kanban Meta Schema ────────────────────────────────────────

@@ -80,16 +80,20 @@ export async function updateTask(existingTask, input, source = 'api') {
         else if (input.epic !== undefined) {
             updatedFrontmatter.epic = input.epic;
         }
-        if (input.isTemplate !== undefined)
+        if (input.isTemplate === false) {
+            delete updatedFrontmatter.isTemplate;
+        }
+        else if (input.isTemplate !== undefined) {
             updatedFrontmatter.isTemplate = input.isTemplate;
+        }
         if (input.recurrence === null) {
-            updatedFrontmatter.recurrence = undefined;
+            delete updatedFrontmatter.recurrence;
         }
         else if (input.recurrence !== undefined) {
             updatedFrontmatter.recurrence = input.recurrence;
         }
         if (input.nextRecurAt === null) {
-            updatedFrontmatter.nextRecurAt = undefined;
+            delete updatedFrontmatter.nextRecurAt;
         }
         else if (input.nextRecurAt !== undefined) {
             updatedFrontmatter.nextRecurAt = input.nextRecurAt;

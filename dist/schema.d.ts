@@ -41,7 +41,6 @@ export declare const TaskFrontmatterSchema: z.ZodObject<{
     isTemplate: z.ZodOptional<z.ZodBoolean>;
     recurrence: z.ZodOptional<z.ZodEnum<{
         daily: "daily";
-        monthly: "monthly";
         weekly: "weekly";
     }>>;
     nextRecurAt: z.ZodOptional<z.ZodString>;
@@ -81,7 +80,6 @@ export declare const CreateTaskInputSchema: z.ZodObject<{
     isTemplate: z.ZodOptional<z.ZodBoolean>;
     recurrence: z.ZodOptional<z.ZodEnum<{
         daily: "daily";
-        monthly: "monthly";
         weekly: "weekly";
     }>>;
     nextRecurAt: z.ZodOptional<z.ZodString>;
@@ -111,7 +109,6 @@ export declare const UpdateTaskInputSchema: z.ZodObject<{
     isTemplate: z.ZodOptional<z.ZodBoolean>;
     recurrence: z.ZodOptional<z.ZodNullable<z.ZodEnum<{
         daily: "daily";
-        monthly: "monthly";
         weekly: "weekly";
     }>>>;
     nextRecurAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;

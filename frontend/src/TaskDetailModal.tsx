@@ -53,7 +53,7 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
   const [editEpic, setEditEpic] = useState('');
   const [editTags, setEditTags] = useState('');
   const [editBody, setEditBody] = useState('');
-  const [editRecurrence, setEditRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
+  const [editRecurrence, setEditRecurrence] = useState<'none' | 'daily' | 'weekly'>('none');
 
   const loadTask = () => {
     setLoadingBody(true);
@@ -116,7 +116,8 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
         tags: editTags ? editTags.split(',').map((t) => t.trim()).filter(Boolean) : [],
         body: editBody,
         recurrence: editRecurrence === 'none' ? null : editRecurrence,
-        isTemplate: editRecurrence !== 'none' ? true : null,
+        isTemplate: editRecurrence !== 'none' ? true : false,
+        nextRecurAt: editRecurrence === 'none' ? null : undefined,
       });
       setEditing(false);
       onUpdated();
@@ -288,8 +289,7 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
                   >
                     <option value="none">None</option>
                     <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly (Monday)</option>
                   </select>
                 </div>
               </div>

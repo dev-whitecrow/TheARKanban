@@ -30,9 +30,9 @@ async function processRecurringTasks() {
   for (const task of allTasks) {
     const { isTemplate, recurrence, nextRecurAt } = task.frontmatter;
 
-    if (isTemplate && recurrence && nextRecurAt) {
-      const recurTime = new Date(nextRecurAt).getTime();
-
+    if (isTemplate && recurrence) {
+      const recurTime = nextRecurAt ? new Date(nextRecurAt).getTime() : 0;
+      
       if (nowTime >= recurTime) {
         consola.info(`[Cron] Triggering recurring task: ${task.frontmatter.title} (${task.frontmatter.id})`);
         
@@ -49,19 +49,23 @@ async function processRecurringTasks() {
         }, 'cron');
 
         // 2. Advance nextRecurAt on the template
-        const nextDate = new Date(recurTime);
+        // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,
+        // and to initialize new templates correctly.
+        const nextDate = new Date(nowTime);
+
         if (recurrence === 'daily') {
           nextDate.setDate(nextDate.getDate() + 1);
         } else if (recurrence === 'weekly') {
-          nextDate.setDate(nextDate.getDate() + 7);
-        } else if (recurrence === 'monthly') {
-          nextDate.setMonth(nextDate.getMonth() + 1);
+          // Snap to next Monday 00:01
+          const day = nextDate.getDay();
+          const daysUntilMonday = (1 + 7 - day) % 7 || 7;
+          nextDate.setDate(nextDate.getDate() + daysUntilMonday);
+          nextDate.setHours(0, 1, 0, 0);
         }
 
         await updateTask(task, {
           nextRecurAt: nextDate.toISOString().replace('Z', '+09:00'),
         }, 'cron');
-
       }
     }
   }

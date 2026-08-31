@@ -15,7 +15,7 @@ export interface TaskFrontmatter {
   createdAt: string;
   updatedAt: string;
   isTemplate?: boolean;
-  recurrence?: 'daily' | 'weekly' | 'monthly';
+  recurrence?: 'daily' | 'weekly';
   nextRecurAt?: string;
   isRecurringInstance?: boolean;
 }
