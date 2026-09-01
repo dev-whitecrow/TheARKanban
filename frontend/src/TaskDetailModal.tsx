@@ -116,7 +116,7 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
         tags: editTags ? editTags.split(',').map((t) => t.trim()).filter(Boolean) : [],
         body: editBody,
         recurrence: editRecurrence === 'none' ? null : editRecurrence,
-        isTemplate: editRecurrence !== 'none' ? true : false,
+        isTemplate: task.isRecurringInstance ? false : (editRecurrence !== 'none' ? true : false),
         nextRecurAt: editRecurrence === 'none' ? null : undefined,
       });
       setEditing(false);
@@ -286,6 +286,7 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
                     className="form-input form-select"
                     value={editRecurrence}
                     onChange={(e) => setEditRecurrence(e.target.value as any)}
+                    disabled={task.isRecurringInstance}
                   >
                     <option value="none">None</option>
                     <option value="daily">Daily</option>

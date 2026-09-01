@@ -38,6 +38,7 @@ async function processRecurringTasks() {
                     epic: task.frontmatter.epic,
                     body: task.body,
                     isRecurringInstance: true,
+                    recurrence: task.frontmatter.recurrence,
                 }, 'cron');
                 // 2. Advance nextRecurAt on the template
                 // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,

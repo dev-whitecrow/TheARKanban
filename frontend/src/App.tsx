@@ -311,7 +311,10 @@ export default function App() {
               key={col.id}
               id={col.id}
               label={col.label}
-              tasks={col.tasks.filter(t => selectedEpics.size === 0 || (t.epic && selectedEpics.has(t.epic)))}
+              tasks={col.tasks
+                .filter(t => selectedEpics.size === 0 || (t.epic && selectedEpics.has(t.epic)))
+                .slice(0, col.id === 'done' ? 30 : undefined)
+              }
               onCardClick={setSelectedTaskId}
               onAddClick={setCreateForColumn}
             />
