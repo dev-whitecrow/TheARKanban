@@ -4,7 +4,7 @@ import { createTask, updateTask } from './write-queue.js';
 import { getKSTISOString } from './utils.js';
 import type { Task } from './schema.js';
 
-const CRON_INTERVAL_MS = 60 * 1000; // Check every 1 minute
+const CRON_INTERVAL_MS = 60 * 60 * 1000; // Check every 1 hour
 
 export function startCronJob() {
   consola.info('Starting recurring tasks scheduler...');
@@ -47,7 +47,7 @@ async function processRecurringTasks() {
           body: task.body,
           isRecurringInstance: true,
           recurrence: task.frontmatter.recurrence,
-        }, 'cron');
+        }, 'Kanban System (Cron)');
 
         // 2. Advance nextRecurAt on the template
         // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,
@@ -56,6 +56,7 @@ async function processRecurringTasks() {
 
         if (recurrence === 'daily') {
           nextDate.setDate(nextDate.getDate() + 1);
+          nextDate.setHours(0, 1, 0, 0);
         } else if (recurrence === 'weekly') {
           // Snap to next Monday 00:01
           const day = nextDate.getDay();
@@ -65,8 +66,8 @@ async function processRecurringTasks() {
         }
 
         await updateTask(task, {
-          nextRecurAt: nextDate.toISOString().replace('Z', '+09:00'),
-        }, 'cron');
+          nextRecurAt: getKSTISOString(nextDate),
+        }, 'Kanban System (Cron)');
       }
     }
   }

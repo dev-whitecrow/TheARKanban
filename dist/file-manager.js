@@ -107,6 +107,7 @@ export function buildNewTask(id, input) {
         createdAt: now,
         updatedAt: now,
         isRecurringInstance: input.isRecurringInstance,
+        recurrence: input.recurrence,
     };
     const activityEntry = `- [${now.slice(0, 16).replace('T', ' ')}] Created${input.assignee ? ` by ${input.assignee}` : ''}`;
     const body = input.body

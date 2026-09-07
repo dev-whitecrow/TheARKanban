@@ -2,7 +2,7 @@ import { consola } from 'consola';
 import { getAllTasks } from './state-manager.js';
 import { createTask, updateTask } from './write-queue.js';
 import { getKSTISOString } from './utils.js';
-const CRON_INTERVAL_MS = 60 * 1000; // Check every 1 minute
+const CRON_INTERVAL_MS = 60 * 60 * 1000; // Check every 1 hour
 export function startCronJob() {
     consola.info('Starting recurring tasks scheduler...');
     setInterval(async () => {
@@ -39,13 +39,14 @@ async function processRecurringTasks() {
                     body: task.body,
                     isRecurringInstance: true,
                     recurrence: task.frontmatter.recurrence,
-                }, 'cron');
+                }, '칸반 시스템 (Cron)');
                 // 2. Advance nextRecurAt on the template
                 // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,
                 // and to initialize new templates correctly.
                 const nextDate = new Date(nowTime);
                 if (recurrence === 'daily') {
                     nextDate.setDate(nextDate.getDate() + 1);
+                    nextDate.setHours(0, 1, 0, 0);
                 }
                 else if (recurrence === 'weekly') {
                     // Snap to next Monday 00:01
@@ -55,8 +56,8 @@ async function processRecurringTasks() {
                     nextDate.setHours(0, 1, 0, 0);
                 }
                 await updateTask(task, {
-                    nextRecurAt: nextDate.toISOString().replace('Z', '+09:00'),
-                }, 'cron');
+                    nextRecurAt: getKSTISOString(nextDate),
+                }, '칸반 시스템 (Cron)');
             }
         }
     }

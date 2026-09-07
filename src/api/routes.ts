@@ -81,7 +81,7 @@ export function createApiRouter(): Router {
         return;
       }
 
-      const task = await createTask(parsed.data, 'api');
+      const task = await createTask(parsed.data, 'Web UI');
       res.status(201).json(task.frontmatter);
     } catch (err) {
       consola.error('POST /api/tasks failed:', err);
@@ -104,7 +104,7 @@ export function createApiRouter(): Router {
         return;
       }
 
-      const updated = await updateTask(existing, parsed.data, 'api');
+      const updated = await updateTask(existing, parsed.data, 'Web UI');
       res.json(updated.frontmatter);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
@@ -129,7 +129,7 @@ export function createApiRouter(): Router {
         return;
       }
 
-      const updated = await moveTask(existing, statusParsed.data, 'api');
+      const updated = await moveTask(existing, statusParsed.data, 'Web UI');
       res.json(updated.frontmatter);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
@@ -153,7 +153,7 @@ export function createApiRouter(): Router {
         return;
       }
 
-      const updated = await addNote(existing, note, author, 'api');
+      const updated = await addNote(existing, note, author, 'Web UI');
       res.json(updated.frontmatter);
     } catch (err) {
       consola.error(`POST /api/tasks/${req.params.id as string}/note failed:`, err);
@@ -170,7 +170,7 @@ export function createApiRouter(): Router {
         return;
       }
 
-      await removeTask(existing, 'api');
+      await removeTask(existing, 'Web UI');
       res.json({ deleted: req.params.id as string });
     } catch (err) {
       consola.error(`DELETE /api/tasks/${req.params.id as string} failed:`, err);

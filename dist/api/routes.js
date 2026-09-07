@@ -60,7 +60,7 @@ export function createApiRouter() {
                 res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
                 return;
             }
-            const task = await createTask(parsed.data, 'api');
+            const task = await createTask(parsed.data, 'Web UI');
             res.status(201).json(task.frontmatter);
         }
         catch (err) {
@@ -81,7 +81,7 @@ export function createApiRouter() {
                 res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
                 return;
             }
-            const updated = await updateTask(existing, parsed.data, 'api');
+            const updated = await updateTask(existing, parsed.data, 'Web UI');
             res.json(updated.frontmatter);
         }
         catch (err) {
@@ -104,7 +104,7 @@ export function createApiRouter() {
                 res.status(400).json({ error: 'Invalid status', validStatuses: TaskStatus.options });
                 return;
             }
-            const updated = await moveTask(existing, statusParsed.data, 'api');
+            const updated = await moveTask(existing, statusParsed.data, 'Web UI');
             res.json(updated.frontmatter);
         }
         catch (err) {
@@ -126,7 +126,7 @@ export function createApiRouter() {
                 res.status(400).json({ error: 'Both "note" and "author" are required' });
                 return;
             }
-            const updated = await addNote(existing, note, author, 'api');
+            const updated = await addNote(existing, note, author, 'Web UI');
             res.json(updated.frontmatter);
         }
         catch (err) {
@@ -142,7 +142,7 @@ export function createApiRouter() {
                 res.status(404).json({ error: `Task ${req.params.id} not found` });
                 return;
             }
-            await removeTask(existing, 'api');
+            await removeTask(existing, 'Web UI');
             res.json({ deleted: req.params.id });
         }
         catch (err) {
