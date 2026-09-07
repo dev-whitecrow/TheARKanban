@@ -126,6 +126,29 @@ export function createApiRouter(): Router {
       }
 
       const updated = await updateTask(existing, parsed.data, 'Web UI');
+
+      // Feature: Immediately spawn an instance if it was just turned into a recurring template.
+      const wasTemplate = existing.frontmatter.isTemplate;
+      const isNowTemplate = updated.frontmatter.isTemplate;
+      if (!wasTemplate && isNowTemplate && updated.frontmatter.recurrence) {
+        try {
+          await createTask({
+            title: updated.frontmatter.title,
+            status: 'todo',
+            assignee: updated.frontmatter.assignee,
+            priority: updated.frontmatter.priority,
+            tags: updated.frontmatter.tags,
+            epic: updated.frontmatter.epic,
+            body: updated.body,
+            isRecurringInstance: true,
+            recurrence: updated.frontmatter.recurrence,
+          }, 'Web UI');
+          consola.info(`Spawned initial instance for newly converted template: ${updated.frontmatter.id}`);
+        } catch (spawnErr) {
+          consola.error(`Failed to spawn initial instance for ${updated.frontmatter.id}:`, spawnErr);
+        }
+      }
+
       res.json(updated.frontmatter);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
