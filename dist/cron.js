@@ -39,7 +39,7 @@ async function processRecurringTasks() {
                     body: task.body,
                     isRecurringInstance: true,
                     recurrence: task.frontmatter.recurrence,
-                }, '칸반 시스템 (Cron)');
+                }, 'Kanban System (Cron)');
                 // 2. Advance nextRecurAt on the template
                 // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,
                 // and to initialize new templates correctly.
@@ -57,7 +57,7 @@ async function processRecurringTasks() {
                 }
                 await updateTask(task, {
                     nextRecurAt: getKSTISOString(nextDate),
-                }, '칸반 시스템 (Cron)');
+                }, 'Kanban System (Cron)');
             }
         }
     }

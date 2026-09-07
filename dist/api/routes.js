@@ -61,6 +61,26 @@ export function createApiRouter() {
                 return;
             }
             const task = await createTask(parsed.data, 'Web UI');
+            // Feature: Immediately spawn the first instance when a new recurring template is created.
+            if (task.frontmatter.isTemplate && task.frontmatter.recurrence) {
+                try {
+                    await createTask({
+                        title: task.frontmatter.title,
+                        status: 'todo',
+                        assignee: task.frontmatter.assignee,
+                        priority: task.frontmatter.priority,
+                        tags: task.frontmatter.tags,
+                        epic: task.frontmatter.epic,
+                        body: task.body,
+                        isRecurringInstance: true,
+                        recurrence: task.frontmatter.recurrence,
+                    }, 'Web UI');
+                    consola.info(`Spawned initial instance for new template: ${task.frontmatter.id}`);
+                }
+                catch (spawnErr) {
+                    consola.error(`Failed to spawn initial instance for ${task.frontmatter.id}:`, spawnErr);
+                }
+            }
             res.status(201).json(task.frontmatter);
         }
         catch (err) {
