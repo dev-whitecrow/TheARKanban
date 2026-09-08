@@ -1,7 +1,7 @@
 import { consola } from 'consola';
 import { getAllTasks } from './state-manager.js';
 import { createTask, updateTask } from './write-queue.js';
-import { getKSTISOString } from './utils.js';
+import { getKSTISOString, calculateNextRecurAt } from './utils.js';
 import type { Task } from './schema.js';
 
 const CRON_INTERVAL_MS = 60 * 60 * 1000; // Check every 1 hour
@@ -52,21 +52,8 @@ async function processRecurringTasks() {
         // 2. Advance nextRecurAt on the template
         // We base the next execution time firmly on "nowTime" to prevent missed-cron rapid firing,
         // and to initialize new templates correctly.
-        const nextDate = new Date(nowTime);
-
-        if (recurrence === 'daily') {
-          nextDate.setDate(nextDate.getDate() + 1);
-          nextDate.setHours(0, 1, 0, 0);
-        } else if (recurrence === 'weekly') {
-          // Snap to next Monday 00:01
-          const day = nextDate.getDay();
-          const daysUntilMonday = (1 + 7 - day) % 7 || 7;
-          nextDate.setDate(nextDate.getDate() + daysUntilMonday);
-          nextDate.setHours(0, 1, 0, 0);
-        }
-
         await updateTask(task, {
-          nextRecurAt: getKSTISOString(nextDate),
+          nextRecurAt: calculateNextRecurAt(recurrence, nowTime),
         }, 'Kanban System (Cron)');
       }
     }

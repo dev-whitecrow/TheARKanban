@@ -3,6 +3,7 @@ import { consola } from 'consola';
 import { getTask, getAllTasks, getBoardState, getHealthInfo, } from '../state-manager.js';
 import { createTask, updateTask, moveTask, addNote, removeTask, } from '../write-queue.js';
 import { CreateTaskInputSchema, UpdateTaskInputSchema, TaskStatus, } from '../schema.js';
+import { calculateNextRecurAt } from '../utils.js';
 export function createApiRouter() {
     const router = Router();
     /**
@@ -76,6 +77,10 @@ export function createApiRouter() {
                         recurrence: task.frontmatter.recurrence,
                     }, 'Web UI');
                     consola.info(`Spawned initial instance for new template: ${task.frontmatter.id}`);
+                    // Initialize nextRecurAt on the template so cron doesn't double-fire
+                    await updateTask(task, {
+                        nextRecurAt: calculateNextRecurAt(task.frontmatter.recurrence),
+                    }, 'Web UI');
                 }
                 catch (spawnErr) {
                     consola.error(`Failed to spawn initial instance for ${task.frontmatter.id}:`, spawnErr);
@@ -119,6 +124,10 @@ export function createApiRouter() {
                         recurrence: updated.frontmatter.recurrence,
                     }, 'Web UI');
                     consola.info(`Spawned initial instance for newly converted template: ${updated.frontmatter.id}`);
+                    // Initialize nextRecurAt on the template so cron doesn't double-fire
+                    await updateTask(updated, {
+                        nextRecurAt: calculateNextRecurAt(updated.frontmatter.recurrence),
+                    }, 'Web UI');
                 }
                 catch (spawnErr) {
                     consola.error(`Failed to spawn initial instance for ${updated.frontmatter.id}:`, spawnErr);
