@@ -69,6 +69,13 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
             {task.epic}
           </span>
         )}
+        {task.dueDate ? (
+          <span className="task-card-due">
+            {task.dueDate}
+          </span>
+        ) : (
+          <span />
+        )}
         {task.assignee ? (
           <div className="task-card-assignee">
             <span 
@@ -82,9 +89,6 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         ) : (
           <span />
         )}
-        <span className="task-card-due">
-          {task.dueDate ?? ''}
-        </span>
       </div>
       {task.tags.length > 0 && (
         <div className="task-card-tags" style={{ marginTop: 6 }}>
@@ -121,6 +125,13 @@ export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
           >
             {task.epic}
           </span>
+        )}
+        {task.dueDate ? (
+          <span className="task-card-due">
+            {task.dueDate}
+          </span>
+        ) : (
+          <span />
         )}
         {task.assignee ? (
           <div className="task-card-assignee">
