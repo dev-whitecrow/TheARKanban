@@ -101,9 +101,6 @@ export async function updateTask(existingTask, input, source = 'api') {
         updatedFrontmatter.updatedAt = now;
         // Build activity log entry
         const changes = [];
-        if (input.title !== undefined && input.title !== existingTask.frontmatter.title) {
-            changes.push(`title updated`);
-        }
         if (input.status && input.status !== existingTask.frontmatter.status) {
             changes.push(`status → ${input.status}`);
         }
@@ -122,14 +119,6 @@ export async function updateTask(existingTask, input, source = 'api') {
         if (input.body !== undefined) {
             const inputParts = input.body.split('## Activity Log');
             const pureUserNotes = inputParts[0].trimEnd();
-            // Check if notes actually changed to log it
-            let pureExistingNotes = existingParts[0].trimEnd();
-            if (pureExistingNotes.startsWith('## Notes')) {
-                pureExistingNotes = pureExistingNotes.replace(/^## Notes\s*/, '').trimEnd();
-            }
-            if (pureUserNotes.trim() !== pureExistingNotes.trim()) {
-                changes.push('notes updated');
-            }
             body = `## Notes\n${pureUserNotes}\n\n${existingActivityLog}`.trim();
         }
         if (changes.length > 0) {

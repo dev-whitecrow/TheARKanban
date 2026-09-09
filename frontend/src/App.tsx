@@ -82,6 +82,8 @@ export default function App() {
   const [activeTask, setActiveTask] = useState<TaskFrontmatter | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createForColumn, setCreateForColumn] = useState<TaskStatus | null>(null);
+  const [selectedAssignees, setSelectedAssignees] = useState<Set<string>>(new Set());
+  const [showAssigneeFilter, setShowAssigneeFilter] = useState(false);
   const [selectedEpics, setSelectedEpics] = useState<Set<string>>(new Set());
   const [showEpicFilter, setShowEpicFilter] = useState(false);
   const [showRecurringModal, setShowRecurringModal] = useState(false);
@@ -90,23 +92,31 @@ export default function App() {
   const uniqueAssignees = React.useMemo(() => {
     if (!board) return [];
     const assignees = new Set<string>();
+    let hasUnassigned = false;
     board.columns.forEach(col => {
       col.tasks.forEach(t => {
         if (t.assignee) assignees.add(t.assignee);
+        else hasUnassigned = true;
       });
     });
-    return Array.from(assignees).sort();
+    const sorted = Array.from(assignees).sort();
+    if (hasUnassigned) sorted.push('Unassigned');
+    return sorted;
   }, [board]);
 
   const uniqueEpics = React.useMemo(() => {
     if (!board) return [];
     const epics = new Set<string>();
+    let hasNoEpic = false;
     board.columns.forEach(col => {
       col.tasks.forEach(t => {
         if (t.epic) epics.add(t.epic);
+        else hasNoEpic = true;
       });
     });
-    return Array.from(epics).sort();
+    const sorted = Array.from(epics).sort();
+    if (hasNoEpic) sorted.push('No Epic');
+    return sorted;
   }, [board]);
 
   // Load initial board state
@@ -245,47 +255,97 @@ export default function App() {
           >
             <span style={{ color: 'var(--priority-high)' }}>🔄</span> Recurring
           </button>
-          <div style={{ position: 'relative' }}>
-            <button
-              className="btn btn-secondary"
-              style={{ padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
-              onClick={() => setShowEpicFilter(!showEpicFilter)}
-            >
-              Filter Epic {selectedEpics.size > 0 && `(${selectedEpics.size})`}
-            </button>
-            {showEpicFilter && (
-              <div className="assignee-dropdown" style={{ right: 0, left: 'auto', minWidth: 200, padding: 8 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, padding: '0 4px', fontWeight: 600, textTransform: 'uppercase' }}>Select Epics</div>
-                {uniqueEpics.length === 0 ? (
-                  <div className="assignee-option empty">No epics</div>
-                ) : (
-                  uniqueEpics.map(epic => (
-                    <label key={epic} className="assignee-option" style={{ display: 'flex', gap: '8px', cursor: 'pointer', padding: '4px 8px' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={selectedEpics.has(epic)}
-                        onChange={(e) => {
-                          const next = new Set(selectedEpics);
-                          if (e.target.checked) next.add(epic);
-                          else next.delete(epic);
-                          setSelectedEpics(next);
-                        }}
-                      />
-                      {epic}
-                    </label>
-                  ))
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{ position: 'relative' }}>
+              <button
+                className="btn btn-secondary"
+                style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}
+                onClick={() => setShowAssigneeFilter(!showAssigneeFilter)}
+                title="Filter Assignee"
+              >
+                🙋🏻
+                {selectedAssignees.size > 0 && (
+                  <span style={{ position: 'absolute', top: -4, right: -4, background: 'var(--accent-indigo)', color: 'white', borderRadius: '50%', width: 14, height: 14, fontSize: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {selectedAssignees.size}
+                  </span>
                 )}
-                {selectedEpics.size > 0 && (
-                  <button 
-                    className="btn btn-secondary" 
-                    style={{ width: '100%', marginTop: 8, padding: '4px', fontSize: 11 }}
-                    onClick={() => setSelectedEpics(new Set())}
-                  >
-                    Clear Filter
-                  </button>
-                )}
-              </div>
-            )}
+              </button>
+              {showAssigneeFilter && (
+                <div className="assignee-dropdown" style={{ right: 0, left: 'auto', minWidth: 200, padding: 8 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, padding: '0 4px', fontWeight: 600, textTransform: 'uppercase' }}>Select Assignees</div>
+                  {uniqueAssignees.length === 0 ? (
+                    <div className="assignee-option empty">No assignees</div>
+                  ) : (
+                    uniqueAssignees.map(assignee => (
+                      <label key={assignee} className="assignee-option" style={{ display: 'flex', gap: '8px', cursor: 'pointer', padding: '4px 8px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedAssignees.has(assignee)}
+                          onChange={(e) => {
+                            const next = new Set(selectedAssignees);
+                            if (e.target.checked) next.add(assignee);
+                            else next.delete(assignee);
+                            setSelectedAssignees(next);
+                          }}
+                        />
+                        {assignee}
+                      </label>
+                    ))
+                  )}
+                  {selectedAssignees.size > 0 && (
+                    <button 
+                      className="btn btn-secondary" 
+                      style={{ width: '100%', marginTop: 8, padding: '4px', fontSize: 11 }}
+                      onClick={() => setSelectedAssignees(new Set())}
+                    >
+                      Show All
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <button
+                className="btn btn-secondary"
+                style={{ padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                onClick={() => setShowEpicFilter(!showEpicFilter)}
+              >
+                Filter Epic {selectedEpics.size > 0 && `(${selectedEpics.size})`}
+              </button>
+              {showEpicFilter && (
+                <div className="assignee-dropdown" style={{ right: 0, left: 'auto', minWidth: 200, padding: 8 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, padding: '0 4px', fontWeight: 600, textTransform: 'uppercase' }}>Select Epics</div>
+                  {uniqueEpics.length === 0 ? (
+                    <div className="assignee-option empty">No epics</div>
+                  ) : (
+                    uniqueEpics.map(epic => (
+                      <label key={epic} className="assignee-option" style={{ display: 'flex', gap: '8px', cursor: 'pointer', padding: '4px 8px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedEpics.has(epic)}
+                          onChange={(e) => {
+                            const next = new Set(selectedEpics);
+                            if (e.target.checked) next.add(epic);
+                            else next.delete(epic);
+                            setSelectedEpics(next);
+                          }}
+                        />
+                        {epic}
+                      </label>
+                    ))
+                  )}
+                  {selectedEpics.size > 0 && (
+                    <button 
+                      className="btn btn-secondary" 
+                      style={{ width: '100%', marginTop: 8, padding: '4px', fontSize: 11 }}
+                      onClick={() => setSelectedEpics(new Set())}
+                    >
+                      Show All
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="stat-badge">
             <span className="count">{board?.totalTasks ?? 0}</span>
@@ -312,7 +372,11 @@ export default function App() {
               id={col.id}
               label={col.label}
               tasks={col.tasks
-                .filter(t => selectedEpics.size === 0 || (t.epic && selectedEpics.has(t.epic)))
+                .filter(t => {
+                  const epicMatch = selectedEpics.size === 0 || (t.epic ? selectedEpics.has(t.epic) : selectedEpics.has('No Epic'));
+                  const assigneeMatch = selectedAssignees.size === 0 || (t.assignee ? selectedAssignees.has(t.assignee) : selectedAssignees.has('Unassigned'));
+                  return epicMatch && assigneeMatch;
+                })
                 .slice(0, col.id === 'done' ? 30 : undefined)
               }
               onCardClick={setSelectedTaskId}
