@@ -322,10 +322,8 @@ h1, h2, h3, .header-title, .modal-title {
   border-style: solid;
   background-color: rgba(255, 255, 255, 0.03);
   text-transform: uppercase;
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  max-width: 130px;
 }
 
 .task-tag {
