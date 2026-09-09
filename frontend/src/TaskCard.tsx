@@ -61,6 +61,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         {task.epic && (
           <span 
             className="epic-badge"
+            title={task.epic}
             style={{
               borderColor: stringToColor(task.epic, 70, 60, 1),
               color: stringToColor(task.epic, 70, 75, 1)
@@ -118,6 +119,7 @@ export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
         {task.epic && (
           <span 
             className="epic-badge"
+            title={task.epic}
             style={{
               borderColor: stringToColor(task.epic, 70, 60, 1),
               color: stringToColor(task.epic, 70, 75, 1)
