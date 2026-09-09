@@ -148,7 +148,20 @@ export async function updateTask(
       changes.push(`priority → ${input.priority}`);
     }
 
-    let body = input.body ?? existingTask.body;
+    // Reconstruct body to protect the Activity Log ledger
+    let body = existingTask.body;
+    
+    // 1. Extract existing Activity Log
+    const existingParts = existingTask.body.split('## Activity Log');
+    const existingActivityLog = existingParts.length > 1 ? `## Activity Log${existingParts[1]}` : '';
+
+    // 2. If frontend sent a new body, wrap it in ## Notes and strip any accidentally sent Activity Logs
+    if (input.body !== undefined) {
+      const inputParts = input.body.split('## Activity Log');
+      const pureUserNotes = inputParts[0].trimEnd();
+      body = `## Notes\n${pureUserNotes}\n\n${existingActivityLog}`.trim();
+    }
+
     if (changes.length > 0) {
       const logEntry = `- [${now.slice(0, 16).replace('T', ' ')}] ${changes.join(', ')} (via ${source})`;
       // Append to Activity Log section

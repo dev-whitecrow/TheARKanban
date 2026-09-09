@@ -143,7 +143,7 @@ export default function CreateTaskModal({ initialStatus, onClose, onCreated, uni
               style={{ minHeight: 120, fontFamily: 'var(--font-mono)' }}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              placeholder="Add checklists (- [ ]), notes, etc."
+              placeholder="Describe the user story in detail, add checklists, or notes..."
             />
           </div>
 

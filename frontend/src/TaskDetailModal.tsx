@@ -67,7 +67,16 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
         setEditDueDate(t.dueDate ?? '');
         setEditEpic(t.epic ?? '');
         setEditTags(t.tags.join(', '));
-        setEditBody(t.body);
+        
+        let pureText = t.body;
+        const logIndex = pureText.indexOf('## Activity Log');
+        if (logIndex !== -1) {
+          pureText = pureText.substring(0, logIndex).trimEnd();
+        }
+        if (pureText.startsWith('## Notes')) {
+          pureText = pureText.replace(/^## Notes\s*/, '');
+        }
+        setEditBody(pureText);
         setEditRecurrence(t.recurrence ?? 'none');
         setLoadingBody(false);
       })
@@ -302,7 +311,7 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
                   style={{ minHeight: 120, fontFamily: 'var(--font-mono)' }}
                   value={editBody || ''}
                   onChange={(e) => setEditBody(e.target.value)}
-                  placeholder="Add notes, checklists, etc."
+                  placeholder="Describe the user story in detail, add checklists, or notes..."
                 />
               </div>
 
