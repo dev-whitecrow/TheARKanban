@@ -286,6 +286,8 @@ h1, h2, h3, .header-title, .modal-title {
 .task-card-assignee {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  width: 60px;
   gap: 5px;
   font-size: 12px;
   color: var(--text-secondary);

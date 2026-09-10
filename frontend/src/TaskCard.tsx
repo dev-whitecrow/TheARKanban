@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { TaskFrontmatter } from './types';
-import { stringToColor } from './utils';
+import { stringToColor, getAssigneeColor } from './utils';
 
 const PRIORITY_EMOJI: Record<string, string> = {
   urgent: '🔴',
@@ -26,8 +26,8 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     isDragging,
   } = useSortable({ id: task.id, data: { task } });
 
-  const assigneeBgColor = task.assignee ? stringToColor(task.assignee, 70, 50, 0.04) : undefined;
-  const assigneeBorderColor = task.assignee ? stringToColor(task.assignee, 70, 50, 0.15) : undefined;
+  const assigneeBgColor = task.assignee ? getAssigneeColor(task.assignee, 0.04) : undefined;
+  const assigneeBorderColor = task.assignee ? getAssigneeColor(task.assignee, 0.15) : undefined;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -81,7 +81,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
           <div className="task-card-assignee">
             <span 
               className="avatar"
-              style={{ backgroundColor: stringToColor(task.assignee, 70, 50, 1) }}
+              style={{ backgroundColor: getAssigneeColor(task.assignee, 1) }}
             >
               {task.assignee[0].toUpperCase()}
             </span>
@@ -139,7 +139,7 @@ export function TaskCardOverlay({ task }: { task: TaskFrontmatter }) {
           <div className="task-card-assignee">
             <span 
               className="avatar"
-              style={{ backgroundColor: stringToColor(task.assignee, 70, 50, 1) }}
+              style={{ backgroundColor: getAssigneeColor(task.assignee, 1) }}
             >
               {task.assignee[0].toUpperCase()}
             </span>
