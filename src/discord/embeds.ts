@@ -115,6 +115,7 @@ export function buildChangeNotificationEmbed(
   type: 'task:created' | 'task:updated' | 'task:deleted',
   task: TaskFrontmatter,
   source: string,
+  changes?: string[],
 ): EmbedBuilder {
   const actionMap = {
     'task:created': { emoji: '🆕', label: 'Created', color: 0x198754 as ColorResolvable },
@@ -124,6 +125,10 @@ export function buildChangeNotificationEmbed(
 
   const action = actionMap[type];
 
+  const changeSection = type === 'task:updated' && changes?.length
+    ? `\n\n📋 **변경 내역**\n${changes.map(c => `• ${c}`).join('\n')}`
+    : '';
+
   return new EmbedBuilder()
     .setColor(action.color)
     .setDescription(
@@ -131,6 +136,7 @@ export function buildChangeNotificationEmbed(
       `\nStatus: \`${task.status}\` | Priority: ${PRIORITY_EMOJI[task.priority] ?? '⚪'} ${task.priority}` +
       (task.assignee ? `\nAssignee: ${task.assignee}` : '') +
       (task.epic ? `\nEpic: \`${task.epic}\`` : '') +
+      changeSection +
       `\n_via ${source}_`,
     )
     .setTimestamp();

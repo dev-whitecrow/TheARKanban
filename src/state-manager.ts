@@ -176,10 +176,26 @@ function handleFileChange(relativePath: string, eventType: 'add' | 'change'): vo
 
       if (isExternalChange) {
         consola.info(`[file-watch] Detected external ${eventType}: ${task.frontmatter.id}`);
+
+        // Compute diff for update events
+        const changes: string[] = [];
+        if (existingTask) {
+          const o = existingTask.frontmatter;
+          const n = task.frontmatter;
+          if (o.status !== n.status) changes.push(`status: ${o.status} → ${n.status}`);
+          if (o.priority !== n.priority) changes.push(`priority: ${o.priority} → ${n.priority}`);
+          if (o.assignee !== n.assignee) changes.push(`assignee: ${o.assignee ?? 'unassigned'} → ${n.assignee ?? 'unassigned'}`);
+          if (o.title !== n.title) changes.push(`title → ${n.title}`);
+          if (o.dueDate !== n.dueDate) changes.push(`dueDate → ${n.dueDate ?? 'cleared'}`);
+          if (o.epic !== n.epic) changes.push(`epic → ${n.epic ?? 'cleared'}`);
+          if (existingTask.body !== task.body) changes.push('📝 Notes 변경됨');
+        }
+
         taskEvents.emit('task:event', {
           type: eventType === 'add' ? 'task:created' : 'task:updated',
           task,
           source: 'file-watch',
+          changes: changes.length > 0 ? changes : undefined,
         } satisfies TaskEvent);
       }
     }, DEBOUNCE_MS),

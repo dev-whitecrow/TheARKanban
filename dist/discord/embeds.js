@@ -82,19 +82,23 @@ export function buildBoardEmbed(board) {
     return embed;
 }
 // ─── Change Notification Embed ─────────────────────────────────
-export function buildChangeNotificationEmbed(type, task, source) {
+export function buildChangeNotificationEmbed(type, task, source, changes) {
     const actionMap = {
         'task:created': { emoji: '🆕', label: 'Created', color: 0x198754 },
         'task:updated': { emoji: '🔄', label: 'Updated', color: 0x0D6EFD },
         'task:deleted': { emoji: '🗑️', label: 'Deleted', color: 0xDC3545 },
     };
     const action = actionMap[type];
+    const changeSection = type === 'task:updated' && changes?.length
+        ? `\n\n📋 **변경 내역**\n${changes.map(c => `• ${c}`).join('\n')}`
+        : '';
     return new EmbedBuilder()
         .setColor(action.color)
         .setDescription(`${action.emoji} **${task.id}** ${action.label.toLowerCase()}: "${task.title}"` +
         `\nStatus: \`${task.status}\` | Priority: ${PRIORITY_EMOJI[task.priority] ?? '⚪'} ${task.priority}` +
         (task.assignee ? `\nAssignee: ${task.assignee}` : '') +
         (task.epic ? `\nEpic: \`${task.epic}\`` : '') +
+        changeSection +
         `\n_via ${source}_`)
         .setTimestamp();
 }

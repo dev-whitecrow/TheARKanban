@@ -29,6 +29,7 @@ export function startNotifications(client: Client, channelId: string): void {
         event.type,
         event.task.frontmatter,
         event.source,
+        event.changes,
       );
       await notificationChannel.send({ embeds: [embed] });
     } catch (err) {

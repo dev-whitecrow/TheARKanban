@@ -5,6 +5,7 @@ export interface TaskEvent {
     type: TaskEventType;
     task: Task;
     source: string;
+    changes?: string[];
 }
 export declare const taskEvents: EventEmitter<any>;
 /**

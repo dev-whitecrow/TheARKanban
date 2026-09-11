@@ -21,7 +21,7 @@ export function startNotifications(client, channelId) {
         if (event.source === 'discord')
             return; // Don't notify about our own actions
         try {
-            const embed = buildChangeNotificationEmbed(event.type, event.task.frontmatter, event.source);
+            const embed = buildChangeNotificationEmbed(event.type, event.task.frontmatter, event.source, event.changes);
             await notificationChannel.send({ embeds: [embed] });
         }
         catch (err) {

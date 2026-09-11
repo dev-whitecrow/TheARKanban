@@ -26,6 +26,7 @@ export interface TaskEvent {
   type: TaskEventType;
   task: Task;
   source: string;  // 'api' | 'discord' | 'mcp' | 'cli' | 'file-watch'
+  changes?: string[];
 }
 
 // ─── Write Queue ───────────────────────────────────────────────
@@ -147,6 +148,15 @@ export async function updateTask(
     if (input.priority && input.priority !== existingTask.frontmatter.priority) {
       changes.push(`priority → ${input.priority}`);
     }
+    if (input.title && input.title !== existingTask.frontmatter.title) {
+      changes.push(`title → ${input.title}`);
+    }
+    if (input.dueDate !== undefined && input.dueDate !== existingTask.frontmatter.dueDate) {
+      changes.push(`dueDate → ${input.dueDate ?? 'cleared'}`);
+    }
+    if (input.epic !== undefined && input.epic !== existingTask.frontmatter.epic) {
+      changes.push(`epic → ${input.epic ?? 'cleared'}`);
+    }
 
     // Reconstruct body to protect the Activity Log ledger
     let body = existingTask.body;
@@ -180,11 +190,17 @@ export async function updateTask(
 
     await writeTaskFile(updatedTask);
 
+    // body change detection — after Activity Log write so it only goes to the event, not the log
+    if (input.body !== undefined) {
+      changes.push('📝 Notes 변경됨');
+    }
+
     consola.success(`[${source}] Updated ${updatedTask.frontmatter.id}: ${changes.join(', ') || 'body'}`);
     taskEvents.emit('task:event', {
       type: 'task:updated',
       task: updatedTask,
       source,
+      changes: changes.length > 0 ? changes : undefined,
     } satisfies TaskEvent);
 
     return updatedTask;
@@ -238,6 +254,7 @@ export async function addNote(
       type: 'task:updated',
       task: updatedTask,
       source,
+      changes: [`💬 ${author}: ${note.slice(0, 50)}${note.length > 50 ? '…' : ''}`],
     } satisfies TaskEvent);
 
     return updatedTask;
