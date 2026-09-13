@@ -14,7 +14,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useDroppable } from '@dnd-kit/core';
+import { useDroppable, useDndContext } from '@dnd-kit/core';
 import TaskCard, { TaskCardOverlay } from './TaskCard';
 import TaskDetailModal from './TaskDetailModal';
 import CreateTaskModal from './CreateTaskModal';
@@ -38,9 +38,11 @@ function DroppableColumn({
   onAddClick: (columnId: TaskStatus) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
+  const { over } = useDndContext();
+  const isOverColumn = over?.id === id || tasks.some((t) => t.id === over?.id);
 
   return (
-    <div className={`column ${isOver ? 'drag-over' : ''}`}>
+    <div className={`column ${isOverColumn ? 'drag-over' : ''}`} ref={setNodeRef}>
       <div className="column-header">
         <span className="column-title">{label}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -54,7 +56,7 @@ function DroppableColumn({
           </button>
         </div>
       </div>
-      <div className="column-tasks" ref={setNodeRef}>
+      <div className="column-tasks">
         <SortableContext
           items={tasks.map((t) => t.id)}
           strategy={verticalListSortingStrategy}

@@ -169,7 +169,7 @@ h1, h2, h3, .header-title, .modal-title {
   padding: 24px;
   overflow-x: auto;
   flex: 1;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 /* ─── Column (No card-in-card structure) ────────────────────── */
@@ -179,10 +179,14 @@ h1, h2, h3, .header-title, .modal-title {
   background: transparent;
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .column.drag-over {
-  border: 1px dashed var(--border-active);
+  background: rgba(226, 253, 112, 0.03);
+  box-shadow: 0 0 0 1px var(--border-active), 0 0 20px rgba(226, 253, 112, 0.15);
 }
 
 .column-header {
