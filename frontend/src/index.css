@@ -54,19 +54,26 @@
   padding: 0;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Typography Hierarchy */
@@ -102,8 +109,9 @@ h1, h2, h3, .header-title, .modal-title {
   padding: 16px 24px;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-subtle);
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow-x: auto;
   z-index: 50;
 }
 

@@ -127,7 +127,10 @@ export async function updateTask(existingTask, input, source = 'api') {
         // 2. If frontend sent a new body, wrap it in ## Notes and strip any accidentally sent Activity Logs
         if (input.body !== undefined) {
             const inputParts = input.body.split('## Activity Log');
-            const pureUserNotes = inputParts[0].trimEnd();
+            let pureUserNotes = inputParts[0].trimEnd();
+            if (pureUserNotes.startsWith('## Notes')) {
+                pureUserNotes = pureUserNotes.replace(/^## Notes\s*/, '');
+            }
             body = `## Notes\n${pureUserNotes}\n\n${existingActivityLog}`.trim();
         }
         if (changes.length > 0) {
