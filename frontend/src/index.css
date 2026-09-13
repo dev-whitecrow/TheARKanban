@@ -56,9 +56,8 @@
 
 html,
 body {
-  height: 100%;
   margin: 0;
-  overflow: hidden;
+  background: var(--bg-primary);
 }
 
 body {
@@ -70,10 +69,9 @@ body {
 }
 
 #root {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 /* Typography Hierarchy */
@@ -170,6 +168,8 @@ h1, h2, h3, .header-title, .modal-title {
   overflow-x: auto;
   flex: 1;
   align-items: stretch;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 /* ─── Column (No card-in-card structure) ────────────────────── */

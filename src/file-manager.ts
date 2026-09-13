@@ -132,9 +132,23 @@ export function buildNewTask(id: string, input: CreateTaskInput): Task {
 
   const activityEntry = `- [${now.slice(0, 16).replace('T', ' ')}] Created${input.assignee ? ` by ${input.assignee}` : ''}`;
 
-  const body = input.body
-    ? `## Notes\n${input.body}\n\n## Activity Log\n${activityEntry}`
-    : `## Notes\n\n## Activity Log\n${activityEntry}`;
+  let rawNotes = input.body || '';
+  let rawActivity = '';
+
+  if (rawNotes.includes('## Activity Log')) {
+    const parts = rawNotes.split('## Activity Log');
+    rawNotes = parts[0];
+    rawActivity = parts[1] ? parts[1].trim() + '\n' : '';
+  }
+  
+  if (rawNotes.startsWith('## Notes\n')) {
+    rawNotes = rawNotes.substring(9);
+  } else if (rawNotes.startsWith('## Notes')) {
+    rawNotes = rawNotes.substring(8);
+  }
+  rawNotes = rawNotes.trim();
+
+  const body = `## Notes\n${rawNotes ? rawNotes + '\n\n' : '\n'}## Activity Log\n${rawActivity}${activityEntry}`;
 
   const filePath = path.join(TASKS_DIR, `${id}.md`);
 
