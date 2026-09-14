@@ -365,11 +365,20 @@ export default function TaskDetailModal({ taskId, initialTask, onClose, onUpdate
           /* ─── View Mode ─── */
           <>
             <div className="modal-header">
-              <div>
+              <div style={{ flex: 1, minWidth: 0, overflowWrap: 'break-word', paddingRight: 16 }}>
                 <div className="modal-id">{task.id}</div>
                 <h2 className="modal-title">{task.title}</h2>
               </div>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+                <a 
+                  className="btn-icon" 
+                  title="Download Markdown" 
+                  href={`/api/tasks/${task.id}/raw`}
+                  download={`${task.id}.md`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  📥
+                </a>
                 <button className="btn-icon" title="Edit" onClick={() => setEditing(true)}>✏️</button>
                 <button className="modal-close" onClick={onClose}>✕</button>
               </div>

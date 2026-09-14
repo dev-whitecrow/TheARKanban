@@ -109,7 +109,8 @@ h1, h2, h3, .header-title, .modal-title {
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   max-width: 100%;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 16px;
   z-index: 50;
 }
 
@@ -129,6 +130,7 @@ h1, h2, h3, .header-title, .modal-title {
   display: flex;
   gap: 16px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .stat-badge {
@@ -592,11 +594,14 @@ h1, h2, h3, .header-title, .modal-title {
   background: transparent;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 4px 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.15s ease;
-  line-height: 1;
 }
 
 .btn-icon:hover {

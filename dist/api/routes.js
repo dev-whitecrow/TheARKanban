@@ -53,6 +53,21 @@ export function createApiRouter() {
             res.status(500).json({ error: 'Internal server error' });
         }
     });
+    // ─── GET /api/tasks/:id/raw ────────────────────────────────
+    router.get('/api/tasks/:id/raw', async (req, res) => {
+        try {
+            const task = getTask(req.params.id);
+            if (!task) {
+                res.status(404).json({ error: `Task ${req.params.id} not found` });
+                return;
+            }
+            res.download(task.filePath, `${task.frontmatter.id}.md`);
+        }
+        catch (err) {
+            consola.error(`GET /api/tasks/${req.params.id}/raw failed:`, err);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
     // ─── POST /api/tasks ───────────────────────────────────────
     router.post('/api/tasks', async (req, res) => {
         try {
